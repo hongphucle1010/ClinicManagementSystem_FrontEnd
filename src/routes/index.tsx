@@ -1,17 +1,22 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import ParentPage from '../page/Parent.page'
-import ChildrenPage from '../page/Children.page'
-import MedicalExaminationPage from '../page/MedicalExamination.page'
-import MedicalExaminationDetailPage from '../page/MedicalExaminationDetail.page'
-import App from '../p2p/ui'
+import ParentPage from '../pages/Parent.page'
+import ChildrenPage from '../pages/Children.page'
+import MedicalExaminationPage from '../pages/MedicalExamination.page'
+import MedicalExaminationDetailPage from '../pages/MedicalExaminationDetail.page'
+import LandingPage from '../pages/LandingPage'
+import MainLayout from '../layout/MainLayout/MainLayout'
 
 const Router: React.FC = () => {
   const userRoutes = [
     {
       path: '/',
-      element: <App />,
+      element: (
+        <MainLayout>
+          <LandingPage />
+        </MainLayout>
+      ),
       errorElement: (
         <div>
           <h1>Home Error</h1>
@@ -20,19 +25,35 @@ const Router: React.FC = () => {
     },
     {
       path: '/parent',
-      element: <ParentPage />
+      element: (
+        <MainLayout>
+          <ParentPage />
+        </MainLayout>
+      )
     },
     {
       path: '/children',
-      element: <ChildrenPage />
+      element: (
+        <MainLayout>
+          <ChildrenPage />
+        </MainLayout>
+      )
     },
     {
       path: '/medicalexamination',
-      element: <MedicalExaminationPage />
+      element: (
+        <MainLayout>
+          <MedicalExaminationPage />
+        </MainLayout>
+      )
     },
     {
       path: '/medicalexamination/detail',
-      element: <MedicalExaminationDetailPage />
+      element: (
+        <MainLayout>
+          <MedicalExaminationDetailPage />
+        </MainLayout>
+      )
     }
   ]
   const router = createBrowserRouter(userRoutes)

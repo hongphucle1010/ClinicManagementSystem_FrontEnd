@@ -1,0 +1,30 @@
+.myAnimation {
+  animation: fadeIn 300ms;
+}
+
+.dropdownContent {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.show {
+  max-height: 500px; /* Set this to a value larger than the dropdown's max height */
+  opacity: 1;
+}
+
+.active-link {
+  color: blue; /* color when active */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
