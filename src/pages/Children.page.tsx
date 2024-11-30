@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { getChildrenInfoApi } from '../api/benhnhi'
+import { Bounce, toast } from 'react-toastify'
 
 type Child = {
   maso: string
@@ -56,6 +57,22 @@ const ChildrenManagement: React.FC = () => {
         setError(err.message)
       })
   }, [location.search])
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        position: 'top-left',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce
+      })
+    }
+  }, [error])
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>

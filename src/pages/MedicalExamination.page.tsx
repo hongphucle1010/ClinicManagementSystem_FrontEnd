@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Table, Modal, TextInput, Select } from 'flowbite-react'
 import { useEffect } from 'react'
-import axios from 'axios'
+import { getMedicalExaminationApi } from '../api/benhnhi'
 
 type MedicalExamination = {
   maso: string
@@ -50,18 +50,12 @@ const MedicalExaminationManagement: React.FC = () => {
     // Parse the query string using URLSearchParams
     const queryParams = new URLSearchParams(location.search)
 
-    // Get the 'phuhuynh_cccd' query parameter
-    const benhnhiId = queryParams.get('benhnhi_id')
-    const endpoint = benhnhiId
-      ? 'http://localhost:4000/api/buoikhambenh/benhnhi/' + benhnhiId
-      : 'http://localhost:4000/api/buoikhambenh'
-    axios
-      .get(endpoint)
+    getMedicalExaminationApi(queryParams)
       .then((res) => {
-        console.log(res.data)
-        setExaminations(res.data)
+        console.log(res)
+        setExaminations(res)
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         console.error(err.message)
       })
   }, [])
