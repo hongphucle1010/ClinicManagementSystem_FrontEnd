@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Table, Modal, TextInput } from 'flowbite-react'
+import { Button, TextInput } from 'flowbite-react'
 
 type Parent = {
   cccd: string

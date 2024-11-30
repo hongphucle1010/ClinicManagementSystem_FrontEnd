@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Table, Modal, TextInput } from 'flowbite-react'
-import ParentForm from '../component/Parent.component'
+import ParentForm from '../components/ParentComponent/Parent.component'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom' // Import useNavigate hook

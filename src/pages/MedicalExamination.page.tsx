@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Button, Table, Modal, TextInput, Select } from 'flowbite-react'
 import { useEffect } from 'react'
 import axios from 'axios'
-import { useLocation } from 'react-router-dom'
 
 type MedicalExamination = {
   maso: string
@@ -62,7 +61,7 @@ const MedicalExaminationManagement: React.FC = () => {
         console.log(res.data)
         setExaminations(res.data)
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         console.error(err.message)
       })
   }, [])
