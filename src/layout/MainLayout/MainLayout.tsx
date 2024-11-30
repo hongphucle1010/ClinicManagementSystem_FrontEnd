@@ -7,7 +7,7 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className={`h-screen flex flex-col overflow-hidden`}>
       <Header />
-      <div className='flex-1 overflow-scroll'>{children}</div>
+      <div className='flex-1 overflow-auto p-0 m-0'>{children}</div>
       <Outlet />
       {/* <Footer /> */}
     </div>
