@@ -4,6 +4,8 @@ import ParentForm from '../components/ParentComponent/Parent.component'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom' // Import useNavigate hook
+import { getAllParentsApi } from '../api/phuhuynh'
+import { Bounce, toast } from 'react-toastify'
 
 type Parent = {
   cccd: string
@@ -42,16 +44,30 @@ const ParentManagement: React.FC = () => {
   }
 
   useEffect(() => {
-    axios
-      .get('http://localhost:4000/api/phuhuynh')
+    getAllParentsApi()
       .then((res) => {
-        console.log(res.data)
-        setParents(res.data)
+        setParents(res)
       })
-      .catch((err: any) => {
+      .catch((err) => {
         setError(err.message)
       })
   }, [])
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        position: 'top-left',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce
+      })
+    }
+  }, [error])
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>

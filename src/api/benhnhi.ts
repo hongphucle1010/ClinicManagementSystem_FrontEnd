@@ -1,15 +1,15 @@
-import { apiClient, childrenEndpoint } from '.'
+import { apiClient } from '.'
 
 export const getChildrenInfoApi = async (params: URLSearchParams) => {
   const phuhuynhCccd = params.get('phuhuynh_cccd')
-  const endpoint = phuhuynhCccd ? `${childrenEndpoint}/phuhuynh/${phuhuynhCccd}` : childrenEndpoint
+  const endpoint = phuhuynhCccd ? `/benhnhi/phuhuynh/${phuhuynhCccd}` : '/benhnhi'
   const res = await apiClient.get(endpoint)
   return res.data
 }
 
-export const getBuoiKhamBenhApi = async (params: URLSearchParams) => {
+export const getMedicalExaminationApi = async (params: URLSearchParams) => {
   const benhnhiId = params.get('benhnhi_id')
-  const endpoint = benhnhiId ? `buoikhambenh/benhnhi/${benhnhiId}` : 'buoikhambenh'
+  const endpoint = benhnhiId ? `/buoikhambenh/benhnhi/${benhnhiId}` : '/buoikhambenh'
   const res = await apiClient.get(endpoint)
   return res.data
 }
