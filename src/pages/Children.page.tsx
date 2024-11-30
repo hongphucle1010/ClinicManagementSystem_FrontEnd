@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Button, Table, Modal, TextInput, Select } from 'flowbite-react'
 import { useEffect } from 'react'
-import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { getChildrenInfoApi } from '../api/benhnhi'
 
 type Child = {
   maso: string
@@ -47,22 +47,15 @@ const ChildrenManagement: React.FC = () => {
     // Parse the query string using URLSearchParams
     const queryParams = new URLSearchParams(location.search)
 
-    // Get the 'phuhuynh_cccd' query parameter
-    const phuhuynhCccd = queryParams.get('phuhuynh_cccd')
-    const endpoint = phuhuynhCccd
-      ? 'http://localhost:4000/api/benhnhi/phuhuynh/' + phuhuynhCccd
-      : 'http://localhost:4000/api/benhnhi'
-    console.log(phuhuynhCccd)
-    axios
-      .get(endpoint)
+    getChildrenInfoApi(queryParams)
       .then((res) => {
-        console.log(res.data)
-        setChildren(res.data)
+        console.log(res)
+        setChildren(res)
       })
-      .catch((err: any) => {
+      .catch((err) => {
         setError(err.message)
       })
-  }, [])
+  }, [location.search])
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>

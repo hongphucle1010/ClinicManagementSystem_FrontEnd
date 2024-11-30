@@ -5,6 +5,9 @@ const host = window.location.hostname === 'clinicmanagementsystem.vercel.app' ? 
 
 export const apiHost = `${host}/api`
 
+export const childrenEndpoint = '/benhnhi'
+export const childrenWithParentEndpoint = '/benhnhi/phuhuynh'
+
 export const apiClient = axios.create({
   baseURL: apiHost
 })
