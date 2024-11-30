@@ -5,9 +5,9 @@ import Header from '../../components/Header/Header'
 
 const MainLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className={`min-h-screen`}>
+    <div className={`h-screen flex flex-col overflow-hidden`}>
       <Header />
-      {children}
+      <div className='flex-1 overflow-scroll'>{children}</div>
       <Outlet />
       {/* <Footer /> */}
     </div>
