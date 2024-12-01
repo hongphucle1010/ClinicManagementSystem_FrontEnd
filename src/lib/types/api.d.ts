@@ -7,6 +7,11 @@ interface ApiMessageOnlyResponse {
   message: string
 }
 
+interface ApiError {
+  message: string
+  error?: string
+}
+
 interface AddChildrenResponse {
   maso_bn: string
   hoten: string
