@@ -15,7 +15,7 @@ export const getMedicalExaminationApi = async (params: URLSearchParams) => {
 }
 
 export const getDrugHistoryApi = async (params: URLSearchParams) => {
-  const benhnhiId = params.get('searchTerm')
+  const benhnhiId = params.get('searchTermDrug')
   console.log(benhnhiId)
   if (!benhnhiId) {
     return null

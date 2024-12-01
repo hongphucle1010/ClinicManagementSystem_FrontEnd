@@ -64,3 +64,11 @@ interface Service {
   mota: string
   cccd_nvth: string
 }
+
+interface BKB {
+  bkb_maso: string
+  ngaykham: string
+  trangthai: string
+  benh_nhi_maso: string
+  ten_bn: string
+}
