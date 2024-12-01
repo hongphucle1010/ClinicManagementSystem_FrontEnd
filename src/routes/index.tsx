@@ -9,7 +9,7 @@ import LandingPage from '../pages/LandingPage'
 import MainLayout from '../layout/MainLayout/MainLayout'
 import LogIn from '../pages/RegisterExamination/LogIn'
 import RegisterExamination from '../pages/RegisterExamination/RegisterExamination'
-import DrugManagement from '../pages/Drug.page'
+import DrugManagement from '../pages/ChildrenDrug.page.tsx'
 import Services from '../pages/ServiceExamination.page.tsx'
 
 const Router: React.FC = () => {
@@ -77,6 +77,14 @@ const Router: React.FC = () => {
     },
     {
       path: '/drug',
+      element: (
+        <MainLayout>
+          <DrugManagement />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/childrendrug',
       element: (
         <MainLayout>
           <DrugManagement />
