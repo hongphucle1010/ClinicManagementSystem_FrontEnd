@@ -62,7 +62,7 @@ const ChildrenManagement: React.FC = () => {
   }
 
   const filteredChildren = children.filter(
-    (child) => child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.masobhyt.includes(searchTerm)
+    (child) => child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.masobhyt?.includes(searchTerm)
   )
 
   const handleViewButton = (cccd: string) => {
