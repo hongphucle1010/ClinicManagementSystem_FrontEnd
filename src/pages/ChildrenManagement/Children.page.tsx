@@ -15,6 +15,8 @@ const ChildrenManagement: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [childToDelete, setChildToDelete] = useState<string | null>(null)
   const navigate = useNavigate()
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
@@ -74,6 +76,37 @@ const ChildrenManagement: React.FC = () => {
     setShowUpdateModal(false)
   }
 
+  const confirmDeleteChild = (maso: string) => {
+    setChildToDelete(maso)
+    setShowDeleteModal(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (childToDelete) {
+      deleteChildrenApi(childToDelete)
+        .then((res) => {
+          console.log(res)
+          setChildren(children.filter((child) => child.maso !== childToDelete))
+          toast.success('Xóa thành công!', {
+            position: 'top-left',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce
+          })
+        })
+        .catch((err: AxiosError<ApiError>) => {
+          setError(err.response?.data?.error || err.response?.data.message || err.message)
+        })
+      setShowDeleteModal(false)
+      setChildToDelete(null)
+    }
+  }
+
   const filteredChildren = children.filter(
     (child) => child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.masobhyt?.includes(searchTerm)
   )
@@ -86,28 +119,6 @@ const ChildrenManagement: React.FC = () => {
   const handleUpdateButton = (child: Child) => {
     setSelectedChild(child)
     setShowUpdateModal(true)
-  }
-
-  const handleDeleteButton = (maso: string) => {
-    deleteChildrenApi(maso)
-      .then((res) => {
-        console.log(res)
-        setChildren(children.filter((child) => child.maso !== maso))
-        toast.success('Xóa thành công!', {
-          position: 'top-left',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-          transition: Bounce
-        })
-      })
-      .catch((err: AxiosError<ApiError>) => {
-        setError(err.response?.data?.error || err.response?.data.message || err.message)
-      })
   }
 
   useEffect(() => {
@@ -207,7 +218,7 @@ const ChildrenManagement: React.FC = () => {
                       size='xs'
                       color='failure'
                       onClick={() => {
-                        handleDeleteButton(child.maso)
+                        confirmDeleteChild(child.maso)
                       }}
                     >
                       Xóa
@@ -236,6 +247,22 @@ const ChildrenManagement: React.FC = () => {
             </Modal.Body>
           </Modal>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+          <Modal.Header>Xác nhận xóa</Modal.Header>
+          <Modal.Body>
+            <p>Bạn có chắc chắn muốn xóa trẻ này không?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color='failure' onClick={handleDeleteConfirm}>
+              Xóa
+            </Button>
+            <Button color='gray' onClick={() => setShowDeleteModal(false)}>
+              Hủy
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </>
   )
