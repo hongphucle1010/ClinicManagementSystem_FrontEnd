@@ -152,7 +152,7 @@ const ChildrenManagement: React.FC = () => {
           {filteredChildren.map((child, index) => (
             <Table.Row key={index} className='bg-white hover:bg-gray-100'>
               <Table.Cell>{child.hoten}</Table.Cell>
-              <Table.Cell>{child.ngaysinh}</Table.Cell>
+              <Table.Cell>{new Date(child.ngaysinh).toLocaleDateString()}</Table.Cell>
               <Table.Cell>{child.gioitinh}</Table.Cell>
               <Table.Cell>{child.chieucao}</Table.Cell>
               <Table.Cell>{child.cannang}</Table.Cell>
@@ -401,10 +401,17 @@ interface UpdateChildFormProps {
 }
 
 const UpdateChildForm: React.FC<UpdateChildFormProps> = ({ child, onSubmit }) => {
+  const ngaysinh = new Date(child.ngaysinh)
+    .toLocaleDateString('en-CA')
+    .split('/')
+    .map((s) => s.padStart(2, '0'))
+    .reverse()
+    .join('-')
+  console.log(ngaysinh)
   const [form, setForm] = useState<UpdateChildrenParams>({
     maso: child.maso,
     hoten: child.hoten,
-    ngaysinh: child.ngaysinh,
+    ngaysinh,
     gioitinh: child.gioitinh,
     chieucao: child.chieucao,
     cannang: child.cannang,
