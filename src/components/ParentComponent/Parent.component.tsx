@@ -38,7 +38,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
     if (form.cccd && form.hoten && form.sdt) {
       onSubmit(form)
     } else {
-      alert('Please fill in all required fields.')
+      alert('Vui lòng điền vào tất cả các trường bắt buộc.')
     }
   }
 
@@ -50,7 +50,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='cccd'
           name='cccd'
           type='text'
-          placeholder='Citizen ID (CCCD)'
+          placeholder='CCCD'
           value={form.cccd}
           onChange={handleChange}
           required
@@ -59,7 +59,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='hoten'
           name='hoten'
           type='text'
-          placeholder='Full Name'
+          placeholder='Họ và tên'
           value={form.hoten}
           onChange={handleChange}
           required
@@ -68,7 +68,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='sdt'
           name='sdt'
           type='text'
-          placeholder='Phone Number'
+          placeholder='Số điện thoại'
           value={form.sdt}
           onChange={handleChange}
           required
@@ -77,7 +77,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='sonha'
           name='sonha'
           type='text'
-          placeholder='House Number'
+          placeholder='Số nhà'
           value={form.sonha}
           onChange={handleChange}
         />
@@ -85,7 +85,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='tenduong'
           name='tenduong'
           type='text'
-          placeholder='Street Name'
+          placeholder='Tên đường'
           value={form.tenduong}
           onChange={handleChange}
         />
@@ -93,7 +93,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='phuong'
           name='phuong'
           type='text'
-          placeholder='Ward'
+          placeholder='Phường'
           value={form.phuong}
           onChange={handleChange}
         />
@@ -101,14 +101,21 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
           id='huyen'
           name='huyen'
           type='text'
-          placeholder='District'
+          placeholder='Quận/Huyện'
           value={form.huyen}
           onChange={handleChange}
         />
-        <TextInput id='tinh' name='tinh' type='text' placeholder='Province' value={form.tinh} onChange={handleChange} />
+        <TextInput
+          id='tinh'
+          name='tinh'
+          type='text'
+          placeholder='Tỉnh/Thành phố'
+          value={form.tinh}
+          onChange={handleChange}
+        />
       </div>
       <div className='mt-4'>
-        <Button onClick={handleSubmit}>Save Parent</Button>
+        <Button onClick={handleSubmit}>Thêm thông tin phụ huynh</Button>
       </div>
     </div>
   )

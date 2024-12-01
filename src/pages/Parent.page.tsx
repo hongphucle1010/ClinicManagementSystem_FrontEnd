@@ -2,21 +2,9 @@ import React, { useState } from 'react'
 import { Button, Table, Modal, TextInput } from 'flowbite-react'
 import ParentForm from '../components/ParentComponent/Parent.component'
 import { useEffect } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom' // Import useNavigate hook
-import { getAllParentsApi } from '../api/phuhuynh'
+import { addParentApi, deleteParentApi, getAllParentsApi } from '../api/phuhuynh'
 import { Bounce, toast } from 'react-toastify'
-
-type Parent = {
-  cccd: string
-  hoten: string
-  sdt: string
-  sonha: string
-  tenduong: string
-  phuong: string
-  huyen: string
-  tinh: string
-}
 
 const ParentManagement: React.FC = () => {
   const [Parents, setParents] = useState<Parent[]>([])
@@ -28,10 +16,12 @@ const ParentManagement: React.FC = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
 
-  const addParent = (Parent: Parent) => {
-    setParents([...Parents, Parent])
+  const addParent = (parent: Parent) => {
+    addParentApi(parent).then((res) => {
+      console.log(res)
+      setParents([...Parents, res.data])
+    })
     setShowModal(false)
-    axios.post('http://localhost:4000/api/phuhuynh/add', Parent)
   }
 
   const filteredParents = Parents.filter(
@@ -39,8 +29,19 @@ const ParentManagement: React.FC = () => {
   )
 
   const handleViewButton = (cccd: string) => {
-    // Redirect to Parent Detail Page
+    // Chuyển hướng đến trang chi tiết phụ huynh
     navigate(`/children?phuhuynh_cccd=${cccd}`)
+  }
+
+  const handleDeleteButton = (cccd: string) => {
+    deleteParentApi(cccd)
+      .then((res) => {
+        console.log(res)
+        setParents(Parents.filter((Parent) => Parent.cccd !== cccd))
+      })
+      .catch((err) => {
+        setError(err.message)
+      })
   }
 
   useEffect(() => {
@@ -55,6 +56,7 @@ const ParentManagement: React.FC = () => {
 
   useEffect(() => {
     if (error) {
+      console.error(error)
       toast.error(error, {
         position: 'top-left',
         autoClose: 5000,
@@ -71,31 +73,29 @@ const ParentManagement: React.FC = () => {
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>
-      <h1 className='text-2xl font-bold mb-6'>Parent Management</h1>
+      <h1 className='text-2xl font-bold mb-6'>Quản lý phụ huynh</h1>
 
-      {/* Search Bar */}
+      {/* Thanh tìm kiếm */}
       <div className='mb-4 flex gap-4'>
         <TextInput
           id='search'
           type='text'
-          placeholder='Search by name or Citizen ID'
+          placeholder='Tìm kiếm theo tên hoặc CCCD'
           value={searchTerm}
           onChange={handleSearch}
           className='flex-grow'
         />
-        <Button onClick={() => setShowModal(true)}>Add Parent</Button>
+        <Button onClick={() => setShowModal(true)}>Thêm phụ huynh</Button>
       </div>
 
-      {/* Add Parent Button */}
-
-      {/* Parent Table */}
+      {/* Bảng phụ huynh */}
       <Table hoverable={true}>
         <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Citizen ID</Table.HeadCell>
-          <Table.HeadCell>Phone Number</Table.HeadCell>
-          <Table.HeadCell>Address</Table.HeadCell>
-          <Table.HeadCell>Actions</Table.HeadCell>
+          <Table.HeadCell>Tên</Table.HeadCell>
+          <Table.HeadCell>CCCD</Table.HeadCell>
+          <Table.HeadCell>Số điện thoại</Table.HeadCell>
+          <Table.HeadCell>Địa chỉ</Table.HeadCell>
+          <Table.HeadCell>Hành động</Table.HeadCell>
         </Table.Head>
         <Table.Body className='divide-y'>
           {filteredParents.map((Parent, index) => (
@@ -107,18 +107,23 @@ const ParentManagement: React.FC = () => {
                 {`${Parent.sonha}, ${Parent.tenduong}, ${Parent.phuong}, ${Parent.huyen}, ${Parent.tinh}`}
               </Table.Cell>
               <Table.Cell>
-                <Button size='xs' color='info' onClick={() => handleViewButton(Parent.cccd)}>
-                  View
-                </Button>
+                <div className='flex gap-1'>
+                  <Button size='xs' color='info' onClick={() => handleViewButton(Parent.cccd)}>
+                    Xem
+                  </Button>
+                  <Button size='xs' color='failure' onClick={() => handleDeleteButton(Parent.cccd)}>
+                    Xóa
+                  </Button>
+                </div>
               </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
 
-      {/* Add Parent Modal */}
+      {/* Modal thêm phụ huynh */}
       <Modal show={showModal} onClose={() => setShowModal(false)}>
-        <Modal.Header>Add Parent</Modal.Header>
+        <Modal.Header>Thêm phụ huynh</Modal.Header>
         <Modal.Body>
           <ParentForm onSubmit={addParent} />
         </Modal.Body>

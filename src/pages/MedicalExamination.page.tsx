@@ -3,19 +3,6 @@ import { Button, Table, Modal, TextInput, Select } from 'flowbite-react'
 import { useEffect } from 'react'
 import { getMedicalExaminationApi } from '../api/benhnhi'
 
-type MedicalExamination = {
-  maso: string
-  ngaykham: string
-  taikham: boolean
-  trangthai: string
-  huyetap: string
-  nhietdo: number
-  chandoan: string
-  ketluan: string
-  maso_bn: string
-  cccd_bs: string
-}
-
 const MedicalExaminationManagement: React.FC = () => {
   const [examinations, setExaminations] = useState<MedicalExamination[]>([
     {
