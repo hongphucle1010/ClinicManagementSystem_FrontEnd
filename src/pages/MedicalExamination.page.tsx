@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { getMedicalExaminationApi } from '../api/benhnhi'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const MedicalExaminationManagement: React.FC = () => {
   const [examinations, setExaminations] = useState<MedicalExamination[]>([])
@@ -13,6 +14,8 @@ const MedicalExaminationManagement: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
+
+  const [drugs, setDrugs] = useState<Drug[]>([])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
 
@@ -41,6 +44,8 @@ const MedicalExaminationManagement: React.FC = () => {
       .catch((err) => {
         console.error(err.message)
       })
+
+    
   }, [])
 
   return (
@@ -73,7 +78,7 @@ const MedicalExaminationManagement: React.FC = () => {
           <Table.HeadCell>Blood Pressure</Table.HeadCell>
           <Table.HeadCell>Temperature</Table.HeadCell>
           <Table.HeadCell>Diagnosis</Table.HeadCell>
-          <Table.HeadCell>Actions</Table.HeadCell>
+          <Table.HeadCell style={{ width: '10%' }}>Actions</Table.HeadCell>
         </Table.Head>
         <Table.Body className='divide-y'>
           {filteredExaminations.map((exam, index) => (
