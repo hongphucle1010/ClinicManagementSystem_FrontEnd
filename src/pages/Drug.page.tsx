@@ -1,141 +1,135 @@
 import React, { useState } from 'react'
-import { Button, Table, TextInput } from 'flowbite-react'
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
-import { getChildrenInfoApi, getDrugHistoryApi } from '../api/benhnhi'
-import { Bounce, toast } from 'react-toastify'
+import { Button, Datepicker, Table, TextInput } from 'flowbite-react'
+// import { useEffect } from 'react'
+// import { useLocation } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
+import { getDrugHistoryApi } from '../api/benhnhi'
+import { getBillHistoryApi } from '../api/hoadon'
+// import { Bounce, toast } from 'react-toastify'
 
-type Child = {
-  maso: string
-  hoten: string
-  ngaysinh: string
-  gioitinh: 'Male' | 'Female'
-  chieucao: number
-  cannang: number
-  bmi: number
-  tiensubenh: string
-  masobhyt: string
-  cccd: string
-  quanhe: string
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 const DrugManagement: React.FC = () => {
-  const [children, setChildren] = useState<Child[]>([])
-
-  const [searchTerm, setSearchTerm] = useState<string>('')
-  const [error, setError] = useState<string>('')
-  const navigate = useNavigate()
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
-  const location = useLocation()
-
-  const filteredChildren = children.filter(
-    (child) => child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.cccd.includes(searchTerm)
-  )
-
-  const handleViewButton = (cccd: string) => {
-    // Redirect to Parent Detail Page
-    navigate(`/medicalexamination?benhnhi_id=${cccd}`)
+  const [searchTermDrug, setSearchTermDrug] = useState<string>('')
+  const handleSearchDrug = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e)
+    setSearchTermDrug(e.target.value)
   }
-
-  const submitForm = () => {
-    console.log('clicked', searchTerm)
-    const queryParams = new URLSearchParams(searchTerm)
+  const [pillsInfo, setPillsInfo] = useState([] as Drug[])
+  const submitFormDrug = () => {
+    console.log('clicked', searchTermDrug)
+    const queryParams = new URLSearchParams({ searchTermDrug })
     getDrugHistoryApi(queryParams).then((res) => {
-      console.log(res)
+      console.log(res.pills)
+      setPillsInfo(res.pills)
     })
   }
 
-  useEffect(() => {
-    // Parse the query string using URLSearchParams
-    const queryParams = new URLSearchParams(location.search)
-
-    getChildrenInfoApi(queryParams)
-      .then((res) => {
-        console.log(res)
-        setChildren(res)
-      })
-      .catch((err) => {
-        setError(err.message)
-      })
-  }, [location.search])
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error, {
-        position: 'top-left',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce
-      })
-    }
-  }, [error])
+  const [searchFromDay, setSearchFromDay] = useState<Date>()
+  const [searchToDay, setSearchToDay] = useState<Date>()
+  const [searchBill, setSearchBill] = useState(0)
+  // const [billInfo, setBillInfo] = useState(0)
+  const submitFormBill = () => {
+    console.log('from', formatDate(searchFromDay as Date))
+    console.log('to', formatDate(searchToDay as Date))
+    const queryParams = new URLSearchParams({
+      // doctor_id: searchDocterId,
+      from: formatDate(searchFromDay as Date),
+      to: formatDate(searchToDay as Date)
+    })
+    getBillHistoryApi(queryParams).then((res) => {
+      // console.log(res.pills)
+      setPillsInfo(res.pills)
+    })
+  }
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>
-      <h1 className='text-2xl font-bold mb-6'>Drug Management</h1>
+      <div>
+        <div className='text-2xl font-bold mb-6'>Drug Management</div>
 
-      {/* Search Bar */}
-      <div className='mb-4'>
-        <TextInput
-          id='search'
-          type='text'
-          placeholder='Search by name or Citizen ID'
-          value={searchTerm}
-          onChange={handleSearch}
+        {/* Search Bar */}
+        <div className='mb-4'>
+          <TextInput
+            id='search'
+            type='text'
+            placeholder='Search by Exam ID or Patient ID'
+            value={searchTermDrug}
+            onChange={handleSearchDrug}
+          />
+        </div>
+
+        {/* Add Child Button */}
+        <div className='mb-6'>
+          <Button onClick={submitFormDrug}>Add Child</Button>
+        </div>
+
+        {/* Children Table */}
+        <Table hoverable={true}>
+          <Table.Head>
+            <Table.HeadCell>Ten</Table.HeadCell>
+            <Table.HeadCell>Dang</Table.HeadCell>
+            <Table.HeadCell>Gia Ca</Table.HeadCell>
+            <Table.HeadCell>So Luong </Table.HeadCell>
+            <Table.HeadCell>Ma So </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className='divide-y'>
+            {pillsInfo.map((pill, index) => (
+              <Table.Row key={index} className='bg-white hover:bg-gray-100'>
+                <Table.Cell>{pill.ten}</Table.Cell>
+                <Table.Cell>{pill.dang}</Table.Cell>
+                <Table.Cell>{pill.giaca}</Table.Cell>
+                <Table.Cell>{pill.soluong}</Table.Cell>
+                <Table.Cell>{pill.ms}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
+
+      <div>
+        <div className='text-2xl font-bold mb-6'>Bills Management</div>
+
+        {/* Search Bar */}
+        {/* <div className='mb-4'>
+          <TextInput
+            id='search'
+            type='text'
+            placeholder='Search by Exam ID or Patient ID'
+            value={searchDoctorId}
+            onChange={}
+          />
+        </div> */}
+
+        <Datepicker
+          value={searchFromDay}
+          onChange={(e) => {
+            setSearchFromDay(e as Date)
+          }}
         />
-      </div>
+        <Datepicker
+          value={searchToDay}
+          onChange={(e) => {
+            setSearchToDay(e as Date)
+          }}
+        />
+        {/* Add Child Button */}
+        <div className='mb-6'>
+          <Button onClick={submitFormBill}>Add Child</Button>
+        </div>
 
-      {/* Add Child Button */}
-      <div className='mb-6'>
-        <Button onClick={submitForm}>Add Child</Button>
+        <div className='mb-4'> {searchBill} </div>
       </div>
-
-      {/* Children Table */}
-      <Table hoverable={true}>
-        <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Birth Date</Table.HeadCell>
-          <Table.HeadCell>Gender</Table.HeadCell>
-          <Table.HeadCell>Height (cm)</Table.HeadCell>
-          <Table.HeadCell>Weight (kg)</Table.HeadCell>
-          <Table.HeadCell>BMI</Table.HeadCell>
-          <Table.HeadCell>Actions</Table.HeadCell>
-        </Table.Head>
-        <Table.Body className='divide-y'>
-          {filteredChildren.map((child, index) => (
-            <Table.Row key={index} className='bg-white hover:bg-gray-100'>
-              <Table.Cell>{child.hoten}</Table.Cell>
-              <Table.Cell>{child.ngaysinh}</Table.Cell>
-              <Table.Cell>{child.gioitinh}</Table.Cell>
-              <Table.Cell>{child.chieucao}</Table.Cell>
-              <Table.Cell>{child.cannang}</Table.Cell>
-              <Table.Cell>{child.bmi}</Table.Cell>
-              <Table.Cell>
-                <Button
-                  size='xs'
-                  color='info'
-                  onClick={() => {
-                    handleViewButton(child.maso)
-                  }}
-                >
-                  View
-                </Button>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
     </div>
   )
 }
 
+// e0be6c97-f834-4a73-8df4-bf06f782eec3
 // Child Form Component
 
 export default DrugManagement

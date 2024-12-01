@@ -39,7 +39,7 @@ interface Drug {
   maso_th: string
   soluong: number
   cachsd: string
-  maso: string
+  ms: string
   ten: string
   dang: string
   giaca: string

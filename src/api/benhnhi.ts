@@ -15,12 +15,15 @@ export const getMedicalExaminationApi = async (params: URLSearchParams) => {
 }
 
 export const getDrugHistoryApi = async (params: URLSearchParams) => {
-  const benhnhiId = params.get('benhnhi_id')
+  const benhnhiId = params.get('searchTerm')
+  console.log(benhnhiId)
   if (!benhnhiId) {
     return null
   }
   const endpoint = `/benhnhi/pill/${benhnhiId}`
   const res = await apiClient.get(endpoint)
+  return res.data
+}
 export const addChildrenApi = async (data: Partial<Child>) => {
   const res = await apiClient.post<ApiResponse<AddChildrenResponse>>('/benhnhi/add', data)
   return res.data
