@@ -5,6 +5,8 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom' // Import useNavigate hook
 import { addParentApi, deleteParentApi, getAllParentsApi } from '../api/phuhuynh'
 import { Bounce, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ParentManagement: React.FC = () => {
   const [Parents, setParents] = useState<Parent[]>([])
@@ -12,15 +14,32 @@ const ParentManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [parentToDelete, setParentToDelete] = useState<string | null>(null)
   const navigate = useNavigate()
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
 
   const addParent = (parent: Parent) => {
-    addParentApi(parent).then((res) => {
-      console.log(res)
-      setParents([...Parents, res.data])
-    })
+    addParentApi(parent)
+      .then((res) => {
+        console.log(res)
+        setParents([...Parents, res.data])
+        toast.success('Thêm phụ huynh thành công!', {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
+      .catch((err) => {
+        setError(err.message)
+      })
     setShowModal(false)
   }
 
@@ -33,15 +52,35 @@ const ParentManagement: React.FC = () => {
     navigate(`/children?phuhuynh_cccd=${cccd}`)
   }
 
-  const handleDeleteButton = (cccd: string) => {
-    deleteParentApi(cccd)
-      .then((res) => {
-        console.log(res)
-        setParents(Parents.filter((Parent) => Parent.cccd !== cccd))
-      })
-      .catch((err) => {
-        setError(err.message)
-      })
+  const confirmDeleteParent = (cccd: string) => {
+    setParentToDelete(cccd)
+    setShowDeleteModal(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (parentToDelete) {
+      deleteParentApi(parentToDelete)
+        .then((res) => {
+          console.log(res)
+          setParents(Parents.filter((Parent) => Parent.cccd !== parentToDelete))
+          toast.success('Xóa thành công!', {
+            position: 'top-left',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce
+          })
+        })
+        .catch((err) => {
+          setError(err.message)
+        })
+      setShowDeleteModal(false)
+      setParentToDelete(null)
+    }
   }
 
   useEffect(() => {
@@ -73,6 +112,7 @@ const ParentManagement: React.FC = () => {
 
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>
+      <ToastContainer />
       <h1 className='text-2xl font-bold mb-6'>Quản lý phụ huynh</h1>
 
       {/* Thanh tìm kiếm */}
@@ -111,7 +151,7 @@ const ParentManagement: React.FC = () => {
                   <Button size='xs' color='info' onClick={() => handleViewButton(Parent.cccd)}>
                     Xem
                   </Button>
-                  <Button size='xs' color='failure' onClick={() => handleDeleteButton(Parent.cccd)}>
+                  <Button size='xs' color='failure' onClick={() => confirmDeleteParent(Parent.cccd)}>
                     Xóa
                   </Button>
                 </div>
@@ -127,6 +167,22 @@ const ParentManagement: React.FC = () => {
         <Modal.Body>
           <ParentForm onSubmit={addParent} />
         </Modal.Body>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+        <Modal.Header>Xác nhận xóa</Modal.Header>
+        <Modal.Body>
+          <p>Bạn có chắc chắn muốn xóa phụ huynh này không?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color='failure' onClick={handleDeleteConfirm}>
+            Xóa
+          </Button>
+          <Button color='gray' onClick={() => setShowDeleteModal(false)}>
+            Hủy
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   )
