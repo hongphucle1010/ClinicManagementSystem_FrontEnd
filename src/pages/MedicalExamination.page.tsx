@@ -2,22 +2,14 @@ import React, { useState } from 'react'
 import { Button, Table, Modal, TextInput, Select } from 'flowbite-react'
 import { useEffect } from 'react'
 import { getMedicalExaminationApi } from '../api/benhnhi'
+import { useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const MedicalExaminationManagement: React.FC = () => {
-  const [examinations, setExaminations] = useState<MedicalExamination[]>([
-    {
-      maso: '123e4567-e89b-12d3-a456-426614174000',
-      ngaykham: '2024-11-26',
-      taikham: true,
-      trangthai: 'Completed',
-      huyetap: '120/80',
-      nhietdo: 36.7,
-      chandoan: 'Flu',
-      ketluan: 'Prescribed medication, follow up in 2 weeks.',
-      maso_bn: '456e1234-e89b-12d3-a456-426614174111',
-      cccd_bs: '987654321'
-    }
-  ])
+  const [examinations, setExaminations] = useState<MedicalExamination[]>([])
+
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -32,6 +24,10 @@ const MedicalExaminationManagement: React.FC = () => {
   const filteredExaminations = examinations.filter(
     (exam) => exam.maso.includes(searchTerm) || exam.maso_bn.includes(searchTerm)
   )
+
+  const handleOnClick = (maso: string) => {
+    navigate(`/medicalexamination/detail?maso_bkb=${maso}`)
+  }
 
   useEffect(() => {
     // Parse the query string using URLSearchParams
@@ -90,7 +86,7 @@ const MedicalExaminationManagement: React.FC = () => {
               <Table.Cell>{exam.nhietdo}°C</Table.Cell>
               <Table.Cell>{exam.chandoan}</Table.Cell>
               <Table.Cell>
-                <Button size='xs' color='info'>
+                <Button size='xs' color='info' onClick={() => handleOnClick(exam.maso)}>
                   View
                 </Button>
               </Table.Cell>
