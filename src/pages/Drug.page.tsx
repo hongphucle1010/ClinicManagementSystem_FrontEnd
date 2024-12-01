@@ -35,16 +35,17 @@ const DrugManagement: React.FC = () => {
   const [searchBill, setSearchBill] = useState(0)
   // const [billInfo, setBillInfo] = useState(0)
   const submitFormBill = () => {
-    console.log('from', formatDate(searchFromDay as Date))
-    console.log('to', formatDate(searchToDay as Date))
+    // console.log('from', formatDate(searchFromDay as Date))
+    // console.log('to', formatDate(searchToDay as Date))
     const queryParams = new URLSearchParams({
       // doctor_id: searchDocterId,
       from: formatDate(searchFromDay as Date),
       to: formatDate(searchToDay as Date)
     })
     getBillHistoryApi(queryParams).then((res) => {
-      // console.log(res.pills)
-      setPillsInfo(res.pills)
+      console.log(res)
+      setSearchBill(res.total_fee)
+      // setPillsInfo(res.pills)
     })
   }
 
@@ -120,7 +121,7 @@ const DrugManagement: React.FC = () => {
         />
         {/* Add Child Button */}
         <div className='mb-6'>
-          <Button onClick={submitFormBill}>Add Child</Button>
+          <Button onClick={submitFormBill}>Search Bill</Button>
         </div>
 
         <div className='mb-4'> {searchBill} </div>

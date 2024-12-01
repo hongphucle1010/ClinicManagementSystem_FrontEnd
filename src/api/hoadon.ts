@@ -12,12 +12,10 @@ import { apiClient } from '.'
 // }
 
 export const getBillHistoryApi = async (params: URLSearchParams) => {
-  const benhnhiId = params.get('searchTerm')
-  console.log(benhnhiId)
-  if (!benhnhiId) {
-    return null
-  }
-  const endpoint = `/benhnhi/bill/${benhnhiId}`
+  const from = params.get('from')
+  const to = params.get('to')
+
+  const endpoint = `/hoadon/sumhoadon?from=${from}&to=${to}`
   const res = await apiClient.get(endpoint)
   return res.data
 }
