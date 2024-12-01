@@ -4,7 +4,9 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { addChildrenApi, deleteChildrenApi, getChildrenInfoApi, updateChildrenApi } from '../../api/benhnhi'
-import { Bounce, toast } from 'react-toastify'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { AxiosError } from 'axios'
 
 const ChildrenManagement: React.FC = () => {
   const [children, setChildren] = useState<Child[]>([])
@@ -13,6 +15,8 @@ const ChildrenManagement: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [childToDelete, setChildToDelete] = useState<string | null>(null)
   const navigate = useNavigate()
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
@@ -32,9 +36,20 @@ const ChildrenManagement: React.FC = () => {
           masobhyt: child.masobhyt
         }
         setChildren([...children, newChild])
+        toast.success('Thêm trẻ thành công!', {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
       })
-      .catch((err) => {
-        setError(err.message)
+      .catch((err: AxiosError<ApiError>) => {
+        setError(err.response?.data?.error || err.response?.data.message || err.message)
       })
     setShowAddModal(false)
   }
@@ -55,10 +70,41 @@ const ChildrenManagement: React.FC = () => {
           transition: Bounce
         })
       })
-      .catch((err) => {
-        setError(err.message)
+      .catch((err: AxiosError<ApiError>) => {
+        setError(err.response?.data?.error || err.response?.data.message || err.message)
       })
     setShowUpdateModal(false)
+  }
+
+  const confirmDeleteChild = (maso: string) => {
+    setChildToDelete(maso)
+    setShowDeleteModal(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (childToDelete) {
+      deleteChildrenApi(childToDelete)
+        .then((res) => {
+          console.log(res)
+          setChildren(children.filter((child) => child.maso !== childToDelete))
+          toast.success('Xóa thành công!', {
+            position: 'top-left',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce
+          })
+        })
+        .catch((err: AxiosError<ApiError>) => {
+          setError(err.response?.data?.error || err.response?.data.message || err.message)
+        })
+      setShowDeleteModal(false)
+      setChildToDelete(null)
+    }
   }
 
   const filteredChildren = children.filter(
@@ -75,17 +121,6 @@ const ChildrenManagement: React.FC = () => {
     setShowUpdateModal(true)
   }
 
-  const handleDeleteButton = (maso: string) => {
-    deleteChildrenApi(maso)
-      .then((res) => {
-        console.log(res)
-        setChildren(children.filter((child) => child.maso !== maso))
-      })
-      .catch((err) => {
-        setError(err.message)
-      })
-  }
-
   useEffect(() => {
     // Parse the query string using URLSearchParams
     const queryParams = new URLSearchParams(location.search)
@@ -95,8 +130,8 @@ const ChildrenManagement: React.FC = () => {
         console.log(res)
         setChildren(res)
       })
-      .catch((err) => {
-        setError(err.message)
+      .catch((err: AxiosError<ApiError>) => {
+        setError(err.response?.data?.error || err.response?.data.message || err.message)
       })
   }, [location.search])
 
@@ -118,99 +153,118 @@ const ChildrenManagement: React.FC = () => {
   }, [error])
 
   return (
-    <div className='p-6 bg-gray-50 min-h-screen'>
-      <h1 className='text-2xl font-bold mb-6'>Quản lý trẻ em</h1>
+    <>
+      <ToastContainer />
+      <div className='p-6 bg-gray-50 min-h-screen'>
+        <h1 className='text-2xl font-bold mb-6'>Quản lý trẻ em</h1>
 
-      {/* Search Bar */}
-      <div className='mb-4'>
-        <TextInput
-          id='search'
-          type='text'
-          placeholder='Tìm kiếm theo tên hoặc mã số BHYT'
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </div>
+        {/* Search Bar */}
+        <div className='mb-4'>
+          <TextInput
+            id='search'
+            type='text'
+            placeholder='Tìm kiếm theo tên hoặc mã số BHYT'
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
 
-      {/* Add Child Button */}
-      <div className='mb-6'>
-        <Button onClick={() => setShowAddModal(true)}>Thêm trẻ</Button>
-      </div>
+        {/* Add Child Button */}
+        <div className='mb-6'>
+          <Button onClick={() => setShowAddModal(true)}>Thêm trẻ</Button>
+        </div>
 
-      {/* Children Table */}
-      <Table hoverable={true}>
-        <Table.Head>
-          <Table.HeadCell>Tên</Table.HeadCell>
-          <Table.HeadCell>Ngày sinh</Table.HeadCell>
-          <Table.HeadCell>Giới tính</Table.HeadCell>
-          <Table.HeadCell>Chiều cao (cm)</Table.HeadCell>
-          <Table.HeadCell>Cân nặng (kg)</Table.HeadCell>
-          <Table.HeadCell>BMI</Table.HeadCell>
-          <Table.HeadCell>Hành động</Table.HeadCell>
-        </Table.Head>
-        <Table.Body className='divide-y'>
-          {filteredChildren.map((child, index) => (
-            <Table.Row key={index} className='bg-white hover:bg-gray-100'>
-              <Table.Cell>{child.hoten}</Table.Cell>
-              <Table.Cell>{new Date(child.ngaysinh).toLocaleDateString()}</Table.Cell>
-              <Table.Cell>{child.gioitinh}</Table.Cell>
-              <Table.Cell>{child.chieucao}</Table.Cell>
-              <Table.Cell>{child.cannang}</Table.Cell>
-              <Table.Cell>{child.bmi}</Table.Cell>
-              <Table.Cell>
-                <div className='flex gap-1'>
-                  <Button
-                    size='xs'
-                    color='info'
-                    onClick={() => {
-                      handleViewButton(child.maso)
-                    }}
-                  >
-                    Xem
-                  </Button>
-                  <Button
-                    size='xs'
-                    color='warning'
-                    onClick={() => {
-                      handleUpdateButton(child)
-                    }}
-                  >
-                    Cập nhật
-                  </Button>
-                  <Button
-                    size='xs'
-                    color='failure'
-                    onClick={() => {
-                      handleDeleteButton(child.maso)
-                    }}
-                  >
-                    Xóa
-                  </Button>
-                </div>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+        {/* Children Table */}
+        <Table hoverable={true}>
+          <Table.Head>
+            <Table.HeadCell>Tên</Table.HeadCell>
+            <Table.HeadCell>Ngày sinh</Table.HeadCell>
+            <Table.HeadCell>Giới tính</Table.HeadCell>
+            <Table.HeadCell>Chiều cao (cm)</Table.HeadCell>
+            <Table.HeadCell>Cân nặng (kg)</Table.HeadCell>
+            <Table.HeadCell>BMI</Table.HeadCell>
+            <Table.HeadCell>Hành động</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className='divide-y'>
+            {filteredChildren.map((child, index) => (
+              <Table.Row key={index} className='bg-white hover:bg-gray-100'>
+                <Table.Cell>{child.hoten}</Table.Cell>
+                <Table.Cell>{new Date(child.ngaysinh).toLocaleDateString()}</Table.Cell>
+                <Table.Cell>{child.gioitinh}</Table.Cell>
+                <Table.Cell>{child.chieucao}</Table.Cell>
+                <Table.Cell>{child.cannang}</Table.Cell>
+                <Table.Cell>{child.bmi}</Table.Cell>
+                <Table.Cell>
+                  <div className='flex gap-1'>
+                    <Button
+                      size='xs'
+                      color='info'
+                      onClick={() => {
+                        handleViewButton(child.maso)
+                      }}
+                    >
+                      Xem
+                    </Button>
+                    <Button
+                      size='xs'
+                      color='warning'
+                      onClick={() => {
+                        handleUpdateButton(child)
+                      }}
+                    >
+                      Cập nhật
+                    </Button>
+                    <Button
+                      size='xs'
+                      color='failure'
+                      onClick={() => {
+                        confirmDeleteChild(child.maso)
+                      }}
+                    >
+                      Xóa
+                    </Button>
+                  </div>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
 
-      {/* Add Child Modal */}
-      <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
-        <Modal.Header>Thêm trẻ</Modal.Header>
-        <Modal.Body>
-          <ChildForm onSubmit={addChild} />
-        </Modal.Body>
-      </Modal>
-
-      {/* Update Child Modal */}
-      {selectedChild && (
-        <Modal show={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
-          <Modal.Header>Cập nhật thông tin trẻ</Modal.Header>
+        {/* Add Child Modal */}
+        <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
+          <Modal.Header>Thêm trẻ</Modal.Header>
           <Modal.Body>
-            <UpdateChildForm child={selectedChild} onSubmit={updateChild} />
+            <ChildForm onSubmit={addChild} />
           </Modal.Body>
         </Modal>
-      )}
-    </div>
+
+        {/* Update Child Modal */}
+        {selectedChild && (
+          <Modal show={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
+            <Modal.Header>Cập nhật thông tin trẻ</Modal.Header>
+            <Modal.Body>
+              <UpdateChildForm child={selectedChild} onSubmit={updateChild} />
+            </Modal.Body>
+          </Modal>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+          <Modal.Header>Xác nhận xóa</Modal.Header>
+          <Modal.Body>
+            <p>Bạn có chắc chắn muốn xóa trẻ này không?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color='failure' onClick={handleDeleteConfirm}>
+              Xóa
+            </Button>
+            <Button color='gray' onClick={() => setShowDeleteModal(false)}>
+              Hủy
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    </>
   )
 }
 
@@ -230,7 +284,7 @@ const ChildForm: React.FC<ChildFormProps> = ({ onSubmit }) => {
     tiensubenh: '',
     masobhyt: '',
     cccd: '',
-    quanhe: ''
+    quanhe: 'Cha'
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -374,16 +428,26 @@ const ChildForm: React.FC<ChildFormProps> = ({ onSubmit }) => {
         {/* Relationship to Guardian Field */}
         <div>
           <label htmlFor='quanhe'>Quan hệ với người giám hộ</label>
-          <TextInput
+          <Select
             id='quanhe'
             name='quanhe'
-            type='text'
-            placeholder='Quan hệ với người giám hộ'
             aria-label='Quan hệ với người giám hộ'
             value={form.quanhe}
             onChange={handleChange}
             required
-          />
+          >
+            <option value='Cha'>Cha</option>
+            <option value='Mẹ'>Mẹ</option>
+            <option value='Anh'>Anh</option>
+            <option value='Chị'>Chị</option>
+            <option value='Em'>Em</option>
+            <option value='Bác'>Bác</option>
+            <option value='Dì'>Dì</option>
+            <option value='Chú'>Chú</option>
+            <option value='Cô'>Cô</option>
+            <option value='Ông'>Ông</option>
+            <option value='Bà'>Bà</option>
+          </Select>
         </div>
       </div>
 
@@ -407,7 +471,6 @@ const UpdateChildForm: React.FC<UpdateChildFormProps> = ({ child, onSubmit }) =>
     .map((s) => s.padStart(2, '0'))
     .reverse()
     .join('-')
-  console.log(ngaysinh)
   const [form, setForm] = useState<UpdateChildrenParams>({
     maso: child.maso,
     hoten: child.hoten,

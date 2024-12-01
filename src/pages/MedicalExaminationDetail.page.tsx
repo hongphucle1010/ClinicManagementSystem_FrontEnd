@@ -1,43 +1,61 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Table, Button, TextInput, Modal } from 'flowbite-react'
+import axios from 'axios'
 
 const MedicalRecord = () => {
-  const [drugs, setDrugs] = useState<Drug[]>([
-    {
-      maso_bkb: '1446b778-b4a0-47a8-a7fa-a5caa1f37bf3',
-      maso_th: '1e48359c-dfb1-4dc1-a8a3-e733ee86e544',
-      soluong: 200,
-      cachsd: 'KHOGN BIET',
-      maso: '1e48359c-dfb1-4dc1-a8a3-e733ee86e544',
-      ten: 'Metformin',
-      dang: 'Viên nén',
-      giaca: '10000'
-    }
-  ])
-  const [services, setServices] = useState<Service[]>([
-    {
-      madichvu: '45563343-c8a0-4d3c-a759-7c2b4a8c285a',
-      ngaythuchien: '2024-11-22T17:00:00.000Z',
-      chuandoan: 'Diagnosis: Hypertension, high blood pressure',
-      ketluan: 'Prescribed medication to control blood pressure',
-      ten: 'Noi Soi',
-      giaca: '600000',
-      mota: 'Kiem tra noi soi day day'
-    }
-  ])
+  const [drugs, setDrugs] = useState<SoluongDrug[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [isDrugModalOpen, setDrugModalOpen] = useState(false)
   const [isServiceModalOpen, setServiceModalOpen] = useState(false)
-  const [newDrug, setNewDrug] = useState<Partial<Drug>>({})
+  const [newDrug, setNewDrug] = useState<Partial<SoluongDrug>>({})
   const [newService, setNewService] = useState<Partial<Service>>({})
 
+  const [drugAvailable, setDrugAvailable] = useState<SoluongDrug[]>([])
+  const queryParams = new URLSearchParams(location.search)
+  const msbkb = queryParams.get('maso_bkb')
+
   const addDrug = () => {
-    setDrugs([...drugs, { ...newDrug, maso: Date.now().toString() } as Drug])
     setDrugModalOpen(false)
+
+    const data = {
+      MASO_BKB: msbkb,
+      MASO_TH: newDrug.maso_th,
+      SOLUONG: newDrug.soluong,
+      CACHSD: newDrug.cachsd
+    }
+    console.log(data)
+    axios.post(`http://localhost:4000/api/soluongthuoc/add`, data)
+    axios
+      .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
+      .then((res) => {
+        //setDrugs(res.data)
+        console.log(res.data)
+        setDrugs(res.data.donthuoc)
+        setServices(res.data.lanthuchiendichvu)
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
   }
 
   const addService = () => {
-    setServices([...services, { ...newService, madichvu: Date.now().toString() } as Service])
     setServiceModalOpen(false)
+    const data = { ...newService, maso_bkb: msbkb }
+    console.log(data)
+    axios.post(`http://localhost:4000/api/lanthuchiendichvu/add`, data).catch((err) => {
+      console.error(err.message)
+    })
+    axios
+      .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
+      .then((res) => {
+        //setDrugs(res.data)
+        console.log(res.data)
+        setDrugs(res.data.donthuoc)
+        setServices(res.data.lanthuchiendichvu)
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
   }
 
   const deleteDrug = (maso: string) => {
@@ -47,6 +65,29 @@ const MedicalRecord = () => {
   const deleteService = (madichvu: string) => {
     setServices(services.filter((service) => service.madichvu !== madichvu))
   }
+  useEffect(() => {
+    // Call API to get drugs and services
+    axios
+      .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
+      .then((res) => {
+        //setDrugs(res.data)
+        console.log(res.data)
+        setDrugs(res.data.donthuoc)
+        setServices(res.data.lanthuchiendichvu)
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
+
+    axios
+      .get('http://localhost:4000/api/thuoc')
+      .then((res) => {
+        setDrugAvailable(res.data)
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
+  }, [])
 
   return (
     <div className='p-4'>
@@ -132,13 +173,12 @@ const MedicalRecord = () => {
       <Modal show={isDrugModalOpen} onClose={() => setDrugModalOpen(false)}>
         <Modal.Header>Add Drug</Modal.Header>
         <Modal.Body>
-          <TextInput placeholder='Name' onChange={(e) => setNewDrug({ ...newDrug, ten: e.target.value })} />
-          <TextInput placeholder='Form' onChange={(e) => setNewDrug({ ...newDrug, dang: e.target.value })} />
+          <TextInput placeholder='Mã thuốc' onChange={(e) => setNewDrug({ ...newDrug, maso_th: e.target.value })} />
           <TextInput
-            placeholder='Price'
-            type='number'
-            onChange={(e) => setNewDrug({ ...newDrug, giaca: e.target.value })}
+            placeholder='Số lượng'
+            onChange={(e) => setNewDrug({ ...newDrug, soluong: parseInt(e.target.value) })}
           />
+          <TextInput placeholder='Cách sử dụng' onChange={(e) => setNewDrug({ ...newDrug, cachsd: e.target.value })} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={addDrug}>Add</Button>
@@ -152,15 +192,21 @@ const MedicalRecord = () => {
       <Modal show={isServiceModalOpen} onClose={() => setServiceModalOpen(false)}>
         <Modal.Header>Add Service</Modal.Header>
         <Modal.Body>
-          <TextInput placeholder='Name' onChange={(e) => setNewService({ ...newService, ten: e.target.value })} />
           <TextInput
-            placeholder='Description'
-            onChange={(e) => setNewService({ ...newService, mota: e.target.value })}
+            placeholder='Mã dịch vụ'
+            onChange={(e) => setNewService({ ...newService, madichvu: e.target.value })}
           />
           <TextInput
-            placeholder='Price'
-            type='number'
-            onChange={(e) => setNewService({ ...newService, giaca: e.target.value })}
+            placeholder='Chuẩn đoán'
+            onChange={(e) => setNewService({ ...newService, chuandoan: e.target.value })}
+          />
+          <TextInput
+            placeholder='Kết luận'
+            onChange={(e) => setNewService({ ...newService, ketluan: e.target.value })}
+          />
+          <TextInput
+            placeholder='CCCD nhân viên thực hiện'
+            onChange={(e) => setNewService({ ...newService, cccd_nvth: e.target.value })}
           />
         </Modal.Body>
         <Modal.Footer>

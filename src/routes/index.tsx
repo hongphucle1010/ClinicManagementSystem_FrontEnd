@@ -11,6 +11,7 @@ import LogIn from '../pages/RegisterExamination/LogIn'
 import RegisterExamination from '../pages/RegisterExamination/RegisterExamination'
 import DrugManagement from '../pages/ChildrenDrug.page.tsx'
 import Services from '../pages/ServiceExamination.page.tsx'
+import Drugs from '../pages/Drug.page.tsx'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -96,6 +97,14 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <Services />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/drugs',
+      element: (
+        <MainLayout>
+          <Drugs />
         </MainLayout>
       )
     }
