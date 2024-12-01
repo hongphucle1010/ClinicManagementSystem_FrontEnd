@@ -2,27 +2,6 @@ import { useEffect, useState } from 'react'
 import { Table, Button, TextInput, Modal } from 'flowbite-react'
 import axios from 'axios'
 
-interface Drug {
-  maso_bkb: string
-  maso_th: string
-  soluong: number
-  cachsd: string
-  maso: string
-  ten: string
-  dang: string
-  giaca: string
-}
-
-interface Service {
-  madichvu: string
-  ngaythuchien: string
-  chuandoan: string
-  ketluan: string
-  ten: string
-  giaca: string
-  mota: string
-}
-
 const MedicalRecord = () => {
   const [drugs, setDrugs] = useState<Drug[]>([])
   const [services, setServices] = useState<Service[]>([])

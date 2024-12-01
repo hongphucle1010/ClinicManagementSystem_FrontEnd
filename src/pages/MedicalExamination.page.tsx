@@ -5,19 +5,6 @@ import { getMedicalExaminationApi } from '../api/benhnhi'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
-type MedicalExamination = {
-  maso: string
-  ngaykham: string
-  taikham: boolean
-  trangthai: string
-  huyetap: string
-  nhietdo: number
-  chandoan: string
-  ketluan: string
-  maso_bn: string
-  cccd_bs: string
-}
-
 const MedicalExaminationManagement: React.FC = () => {
   const [examinations, setExaminations] = useState<MedicalExamination[]>([])
 
