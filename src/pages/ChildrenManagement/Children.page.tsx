@@ -20,6 +20,7 @@ const ChildrenManagement: React.FC = () => {
   const [childToDelete, setChildToDelete] = useState<string | null>(null)
   const [sortField, setSortField] = useState<keyof Child>('hoten')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [displayCount, setDisplayCount] = useState<number>(8)
   const navigate = useNavigate()
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
@@ -125,13 +126,19 @@ const ChildrenManagement: React.FC = () => {
     chieucao: string
     cannang: string
     bmi: string
+    chieucaoCriteria: '>' | '<' | '='
+    cannangCriteria: '>' | '<' | '='
+    bmiCriteria: '>' | '<' | '='
   }>({
     hoten: '',
     ngaysinh: '',
     gioitinh: '',
     chieucao: '',
     cannang: '',
-    bmi: ''
+    bmi: '',
+    chieucaoCriteria: '=',
+    cannangCriteria: '=',
+    bmiCriteria: '='
   })
   const [showFilter, setShowFilter] = useState<{
     hoten: boolean
@@ -157,15 +164,27 @@ const ChildrenManagement: React.FC = () => {
     setFilters({ ...filters, [column]: value })
   }
 
+  const handleCriteriaChange = (
+    column: 'chieucaoCriteria' | 'cannangCriteria' | 'bmiCriteria',
+    value: '>' | '<' | '='
+  ) => {
+    setFilters({ ...filters, [column]: value })
+  }
+
   const filteredChildren = children
     .filter((child) => {
+      const compare = (a: number, b: number, criteria: '>' | '<' | '=') => {
+        if (criteria === '>') return a > b
+        if (criteria === '<') return a < b
+        return a === b
+      }
       return (
         (!filters.hoten || child.hoten.toLowerCase().includes(filters.hoten.toLowerCase())) &&
         (!filters.ngaysinh || child.ngaysinh.includes(filters.ngaysinh)) &&
         (!filters.gioitinh || child.gioitinh.trim() === filters.gioitinh) &&
-        (!filters.chieucao || child.chieucao.toString() === filters.chieucao) &&
-        (!filters.cannang || child.cannang.toString() === filters.cannang) &&
-        (!filters.bmi || child.bmi.toString() === filters.bmi) &&
+        (!filters.chieucao || compare(child.chieucao, parseFloat(filters.chieucao), filters.chieucaoCriteria)) &&
+        (!filters.cannang || compare(child.cannang, parseFloat(filters.cannang), filters.cannangCriteria)) &&
+        (!filters.bmi || compare(child.bmi, parseFloat(filters.bmi), filters.bmiCriteria)) &&
         (child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.masobhyt?.includes(searchTerm))
       )
     })
@@ -185,6 +204,10 @@ const ChildrenManagement: React.FC = () => {
   const handleUpdateButton = (child: Child) => {
     setSelectedChild(child)
     setShowUpdateModal(true)
+  }
+
+  const handleShowMore = () => {
+    setDisplayCount(displayCount + 8)
   }
 
   useEffect(() => {
@@ -315,12 +338,23 @@ const ChildrenManagement: React.FC = () => {
                 <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('chieucao')} />
               </div>
               {showFilter.chieucao && (
-                <TextInput
-                  className='mt-1'
-                  placeholder='Lọc theo chiều cao'
-                  value={filters.chieucao}
-                  onChange={(e) => handleFilterChange('chieucao', e.target.value)}
-                />
+                <>
+                  <Select
+                    className='mt-1'
+                    value={filters.chieucaoCriteria}
+                    onChange={(e) => handleCriteriaChange('chieucaoCriteria', e.target.value as '>' | '<' | '=')}
+                  >
+                    <option value='='>=</option>
+                    <option value='>'>&gt;</option>
+                    <option value='<'>&lt;</option>
+                  </Select>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo chiều cao'
+                    value={filters.chieucao}
+                    onChange={(e) => handleFilterChange('chieucao', e.target.value)}
+                  />
+                </>
               )}
             </Table.HeadCell>
             <Table.HeadCell>
@@ -329,12 +363,23 @@ const ChildrenManagement: React.FC = () => {
                 <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('cannang')} />
               </div>
               {showFilter.cannang && (
-                <TextInput
-                  className='mt-1'
-                  placeholder='Lọc theo cân nặng'
-                  value={filters.cannang}
-                  onChange={(e) => handleFilterChange('cannang', e.target.value)}
-                />
+                <>
+                  <Select
+                    className='mt-1'
+                    value={filters.cannangCriteria}
+                    onChange={(e) => handleCriteriaChange('cannangCriteria', e.target.value as '>' | '<' | '=')}
+                  >
+                    <option value='='>=</option>
+                    <option value='>'>&gt;</option>
+                    <option value='<'>&lt;</option>
+                  </Select>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo cân nặng'
+                    value={filters.cannang}
+                    onChange={(e) => handleFilterChange('cannang', e.target.value)}
+                  />
+                </>
               )}
             </Table.HeadCell>
             <Table.HeadCell>
@@ -343,18 +388,29 @@ const ChildrenManagement: React.FC = () => {
                 <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('bmi')} />
               </div>
               {showFilter.bmi && (
-                <TextInput
-                  className='mt-1'
-                  placeholder='Lọc theo BMI'
-                  value={filters.bmi}
-                  onChange={(e) => handleFilterChange('bmi', e.target.value)}
-                />
+                <>
+                  <Select
+                    className='mt-1'
+                    value={filters.bmiCriteria}
+                    onChange={(e) => handleCriteriaChange('bmiCriteria', e.target.value as '>' | '<' | '=')}
+                  >
+                    <option value='='>=</option>
+                    <option value='>'>&gt;</option>
+                    <option value='<'>&lt;</option>
+                  </Select>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo BMI'
+                    value={filters.bmi}
+                    onChange={(e) => handleFilterChange('bmi', e.target.value)}
+                  />
+                </>
               )}
             </Table.HeadCell>
             <Table.HeadCell>Hành động</Table.HeadCell>
           </Table.Head>
           <Table.Body className='divide-y'>
-            {filteredChildren.map((child, index) => (
+            {filteredChildren.slice(0, displayCount).map((child, index) => (
               <Table.Row key={index} className='bg-white hover:bg-gray-100'>
                 <Table.Cell>{child.hoten}</Table.Cell>
                 <Table.Cell>{new Date(child.ngaysinh).toLocaleDateString()}</Table.Cell>
@@ -397,6 +453,11 @@ const ChildrenManagement: React.FC = () => {
             ))}
           </Table.Body>
         </Table>
+        {displayCount < filteredChildren.length && (
+          <div className='mt-4 w-full flex justify-center'>
+            <Button onClick={handleShowMore}>Hiển thị thêm</Button>
+          </div>
+        )}
 
         {/* Add Child Modal */}
         <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
