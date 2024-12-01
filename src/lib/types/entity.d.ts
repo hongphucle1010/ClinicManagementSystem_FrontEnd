@@ -50,6 +50,8 @@ interface Drug {
   ten: string
   dang: string
   soluong: number
+  giaca: number
+  ms: string
 }
 
 interface Service {

@@ -12,6 +12,7 @@ import RegisterExamination from '../pages/RegisterExamination/RegisterExaminatio
 import DrugManagement from '../pages/ChildrenDrug.page.tsx'
 import Services from '../pages/ServiceExamination.page.tsx'
 import Drugs from '../pages/Drug.page.tsx'
+import DrugPage from '../pages/Drug.page.tsx'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -80,7 +81,7 @@ const Router: React.FC = () => {
       path: '/drug',
       element: (
         <MainLayout>
-          <DrugManagement />
+          <DrugPage />
         </MainLayout>
       )
     },
