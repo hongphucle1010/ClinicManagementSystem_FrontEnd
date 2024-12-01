@@ -21,5 +21,17 @@ export const getDrugHistoryApi = async (params: URLSearchParams) => {
   }
   const endpoint = `/benhnhi/pill/${benhnhiId}`
   const res = await apiClient.get(endpoint)
+export const addChildrenApi = async (data: Partial<Child>) => {
+  const res = await apiClient.post<ApiResponse<AddChildrenResponse>>('/benhnhi/add', data)
+  return res.data
+}
+
+export const deleteChildrenApi = async (maso: string) => {
+  const res = await apiClient.delete(`/benhnhi/delete/`, { data: { maso } })
+  return res.data
+}
+
+export const updateChildrenApi = async (data: UpdateChildrenParams) => {
+  const res = await apiClient.put<ApiMessageOnlyResponse>('/benhnhi/update', data)
   return res.data
 }

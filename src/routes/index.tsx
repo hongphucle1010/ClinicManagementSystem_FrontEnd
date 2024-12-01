@@ -2,7 +2,7 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import ParentPage from '../pages/Parent.page'
-import ChildrenPage from '../pages/Children.page'
+import ChildrenPage from '../pages/ChildrenManagement/Children.page'
 import MedicalExaminationPage from '../pages/MedicalExamination.page'
 import MedicalExaminationDetailPage from '../pages/MedicalExaminationDetail.page'
 import LandingPage from '../pages/LandingPage'
@@ -10,6 +10,7 @@ import MainLayout from '../layout/MainLayout/MainLayout'
 import LogIn from '../pages/RegisterExamination/LogIn'
 import RegisterExamination from '../pages/RegisterExamination/RegisterExamination'
 import DrugManagement from '../pages/Drug.page'
+import Services from '../pages/ServiceExamination.page.tsx'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -79,6 +80,14 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <DrugManagement />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/services',
+      element: (
+        <MainLayout>
+          <Services />
         </MainLayout>
       )
     }
