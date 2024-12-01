@@ -7,6 +7,8 @@ import MedicalExaminationPage from '../pages/MedicalExamination.page'
 import MedicalExaminationDetailPage from '../pages/MedicalExaminationDetail.page'
 import LandingPage from '../pages/LandingPage'
 import MainLayout from '../layout/MainLayout/MainLayout'
+import LogIn from '../pages/RegisterExamination/LogIn'
+import RegisterExamination from '../pages/RegisterExamination/RegisterExamination'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -40,6 +42,14 @@ const Router: React.FC = () => {
       )
     },
     {
+      path: '/login',
+      element: (
+        <MainLayout>
+          <LogIn />
+        </MainLayout>
+      )
+    },
+    {
       path: '/medicalexamination',
       element: (
         <MainLayout>
@@ -52,6 +62,14 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <MedicalExaminationDetailPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/registerexamination',
+      element: (
+        <MainLayout>
+          <RegisterExamination />
         </MainLayout>
       )
     }

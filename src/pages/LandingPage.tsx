@@ -1,8 +1,10 @@
 import { Button } from 'flowbite-react'
 import image from '../assets/image.png'
 import { FaAngleDoubleRight } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 const LandingPage: React.FC = () => {
+  const navigate = useNavigate()
   return (
     <div className='flex w-full h-full m-0'>
       <div className='w-1/2 h-full flex justify-center flex-col pl-20'>
@@ -12,7 +14,7 @@ const LandingPage: React.FC = () => {
             <p className='italic'>Đặt lịch khám chỉ với vài cú click</p>
           </div>
           <div>
-            <Button gradientMonochrome='info'>
+            <Button gradientMonochrome='info' onClick={() => navigate('/login')}>
               <p className='flex justify-center items-center gap-2'>
                 <span>Đăng kí khám ngay</span>
                 <FaAngleDoubleRight />
