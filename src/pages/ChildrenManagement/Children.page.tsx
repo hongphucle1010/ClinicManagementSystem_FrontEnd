@@ -203,6 +203,20 @@ const ChildrenManagement: React.FC = () => {
     setFilters({ ...filters, [column]: value })
   }
 
+  const handleClearAllFilters = () => {
+    setFilters({
+      hoten: '',
+      ngaysinh: '',
+      gioitinh: '',
+      chieucao: '',
+      cannang: '',
+      bmi: '',
+      chieucaoCriteria: '=',
+      cannangCriteria: '=',
+      bmiCriteria: '='
+    })
+  }
+
   const filteredChildren = children
     .filter((child) => {
       const compare = (a: number, b: number, criteria: '>' | '<' | '=') => {
@@ -309,6 +323,7 @@ const ChildrenManagement: React.FC = () => {
             <option value='asc'>Tăng dần</option>
             <option value='desc'>Giảm dần</option>
           </Select>
+          <Button onClick={handleClearAllFilters}>Clear All Filters</Button>
         </div>
 
         {/* Add Child Button */}
