@@ -9,6 +9,7 @@ import LandingPage from '../pages/LandingPage'
 import MainLayout from '../layout/MainLayout/MainLayout'
 import LogIn from '../pages/RegisterExamination/LogIn'
 import RegisterExamination from '../pages/RegisterExamination/RegisterExamination'
+import Services from '../pages/ServiceExamination.page.tsx'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -70,6 +71,14 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <RegisterExamination />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/services',
+      element: (
+        <MainLayout>
+          <Services />
         </MainLayout>
       )
     }
