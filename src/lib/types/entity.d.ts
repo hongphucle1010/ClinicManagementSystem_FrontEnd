@@ -34,7 +34,7 @@ interface MedicalExamination {
   cccd_bs: string
 }
 
-interface Drug {
+interface SoluongDrug {
   maso_bkb: string
   maso_th: string
   soluong: number
@@ -45,6 +45,13 @@ interface Drug {
   giaca: string
 }
 
+interface Drug {
+  maso: string
+  ten: string
+  dang: string
+  soluong: number
+}
+
 interface Service {
   madichvu: string
   ngaythuchien: string
@@ -53,4 +60,5 @@ interface Service {
   ten: string
   giaca: string
   mota: string
+  cccd_nvth: string
 }
