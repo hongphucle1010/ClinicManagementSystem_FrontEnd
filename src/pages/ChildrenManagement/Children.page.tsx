@@ -7,6 +7,7 @@ import { addChildrenApi, deleteChildrenApi, getChildrenInfoApi, updateChildrenAp
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { AxiosError } from 'axios'
+import { FaFilter } from 'react-icons/fa' // Import the filter icon from react-icons
 
 const ChildrenManagement: React.FC = () => {
   const [children, setChildren] = useState<Child[]>([])
@@ -17,6 +18,9 @@ const ChildrenManagement: React.FC = () => {
   const [error, setError] = useState<string>('')
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [childToDelete, setChildToDelete] = useState<string | null>(null)
+  const [sortField, setSortField] = useState<keyof Child>('hoten')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [displayCount, setDisplayCount] = useState<number>(8)
   const navigate = useNavigate()
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
@@ -107,9 +111,90 @@ const ChildrenManagement: React.FC = () => {
     }
   }
 
-  const filteredChildren = children.filter(
-    (child) => child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.masobhyt?.includes(searchTerm)
-  )
+  const handleSortFieldChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortField(e.target.value as keyof Child)
+  }
+
+  const handleSortOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(e.target.value as 'asc' | 'desc')
+  }
+
+  const [filters, setFilters] = useState<{
+    hoten: string
+    ngaysinh: string
+    gioitinh: string
+    chieucao: string
+    cannang: string
+    bmi: string
+    chieucaoCriteria: '>' | '<' | '='
+    cannangCriteria: '>' | '<' | '='
+    bmiCriteria: '>' | '<' | '='
+  }>({
+    hoten: '',
+    ngaysinh: '',
+    gioitinh: '',
+    chieucao: '',
+    cannang: '',
+    bmi: '',
+    chieucaoCriteria: '=',
+    cannangCriteria: '=',
+    bmiCriteria: '='
+  })
+  const [showFilter, setShowFilter] = useState<{
+    hoten: boolean
+    ngaysinh: boolean
+    gioitinh: boolean
+    chieucao: boolean
+    cannang: boolean
+    bmi: boolean
+  }>({
+    hoten: false,
+    ngaysinh: false,
+    gioitinh: false,
+    chieucao: false,
+    cannang: false,
+    bmi: false
+  })
+
+  const toggleFilter = (column: keyof typeof showFilter) => {
+    setShowFilter({ ...showFilter, [column]: !showFilter[column] })
+  }
+
+  const handleFilterChange = (column: keyof typeof filters, value: string) => {
+    setFilters({ ...filters, [column]: value })
+  }
+
+  const handleCriteriaChange = (
+    column: 'chieucaoCriteria' | 'cannangCriteria' | 'bmiCriteria',
+    value: '>' | '<' | '='
+  ) => {
+    setFilters({ ...filters, [column]: value })
+  }
+
+  const filteredChildren = children
+    .filter((child) => {
+      const compare = (a: number, b: number, criteria: '>' | '<' | '=') => {
+        if (criteria === '>') return a > b
+        if (criteria === '<') return a < b
+        return a === b
+      }
+      return (
+        (!filters.hoten || child.hoten.toLowerCase().includes(filters.hoten.toLowerCase())) &&
+        (!filters.ngaysinh || child.ngaysinh.includes(filters.ngaysinh)) &&
+        (!filters.gioitinh || child.gioitinh.trim() === filters.gioitinh) &&
+        (!filters.chieucao || compare(child.chieucao, parseFloat(filters.chieucao), filters.chieucaoCriteria)) &&
+        (!filters.cannang || compare(child.cannang, parseFloat(filters.cannang), filters.cannangCriteria)) &&
+        (!filters.bmi || compare(child.bmi, parseFloat(filters.bmi), filters.bmiCriteria)) &&
+        (child.hoten.toLowerCase().includes(searchTerm.toLowerCase()) || child.masobhyt?.includes(searchTerm))
+      )
+    })
+    .sort((a, b) => {
+      const fieldA = a[sortField] as string | number
+      const fieldB = b[sortField] as string | number
+      if (fieldA < fieldB) return sortOrder === 'asc' ? -1 : 1
+      if (fieldA > fieldB) return sortOrder === 'asc' ? 1 : -1
+      return 0
+    })
 
   const handleViewButton = (cccd: string) => {
     // Redirect to Parent Detail Page
@@ -119,6 +204,10 @@ const ChildrenManagement: React.FC = () => {
   const handleUpdateButton = (child: Child) => {
     setSelectedChild(child)
     setShowUpdateModal(true)
+  }
+
+  const handleShowMore = () => {
+    setDisplayCount(displayCount + 8)
   }
 
   useEffect(() => {
@@ -159,14 +248,35 @@ const ChildrenManagement: React.FC = () => {
         <h1 className='text-2xl font-bold mb-6'>Quản lý trẻ em</h1>
 
         {/* Search Bar */}
-        <div className='mb-4'>
+        <div className='mb-4 flex gap-4 w-full'>
           <TextInput
             id='search'
             type='text'
             placeholder='Tìm kiếm theo tên hoặc mã số BHYT'
             value={searchTerm}
             onChange={handleSearch}
+            className='w-1/2'
           />
+          <Select
+            id='genderFilter'
+            value={filters.gioitinh}
+            onChange={(e) => handleFilterChange('gioitinh', e.target.value)}
+          >
+            <option value=''>Tất cả giới tính</option>
+            <option value='Nam'>Nam</option>
+            <option value='Nữ'>Nữ</option>
+          </Select>
+          <Select id='sortField' value={sortField} onChange={handleSortFieldChange}>
+            <option value='hoten'>Tên</option>
+            <option value='ngaysinh'>Ngày sinh</option>
+            <option value='chieucao'>Chiều cao</option>
+            <option value='cannang'>Cân nặng</option>
+            <option value='bmi'>BMI</option>
+          </Select>
+          <Select id='sortOrder' value={sortOrder} onChange={handleSortOrderChange}>
+            <option value='asc'>Tăng dần</option>
+            <option value='desc'>Giảm dần</option>
+          </Select>
         </div>
 
         {/* Add Child Button */}
@@ -177,16 +287,130 @@ const ChildrenManagement: React.FC = () => {
         {/* Children Table */}
         <Table hoverable={true}>
           <Table.Head>
-            <Table.HeadCell>Tên</Table.HeadCell>
-            <Table.HeadCell>Ngày sinh</Table.HeadCell>
-            <Table.HeadCell>Giới tính</Table.HeadCell>
-            <Table.HeadCell>Chiều cao (cm)</Table.HeadCell>
-            <Table.HeadCell>Cân nặng (kg)</Table.HeadCell>
-            <Table.HeadCell>BMI</Table.HeadCell>
+            <Table.HeadCell>
+              <div className='flex items-center'>
+                Tên
+                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('hoten')} />
+              </div>
+              {showFilter.hoten && (
+                <TextInput
+                  className='mt-1'
+                  placeholder='Lọc theo tên'
+                  value={filters.hoten}
+                  onChange={(e) => handleFilterChange('hoten', e.target.value)}
+                />
+              )}
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <div className='flex items-center'>
+                Ngày sinh
+                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('ngaysinh')} />
+              </div>
+              {showFilter.ngaysinh && (
+                <TextInput
+                  className='mt-1'
+                  type='date'
+                  value={filters.ngaysinh}
+                  onChange={(e) => handleFilterChange('ngaysinh', e.target.value)}
+                />
+              )}
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <div className='flex items-center'>
+                Giới tính
+                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('gioitinh')} />
+              </div>
+              {showFilter.gioitinh && (
+                <Select
+                  className='mt-1'
+                  value={filters.gioitinh}
+                  onChange={(e) => handleFilterChange('gioitinh', e.target.value)}
+                >
+                  <option value=''>Tất cả</option>
+                  <option value='Nam'>Nam</option>
+                  <option value='Nữ'>Nữ</option>
+                </Select>
+              )}
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <div className='flex items-center'>
+                Chiều cao (cm)
+                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('chieucao')} />
+              </div>
+              {showFilter.chieucao && (
+                <>
+                  <Select
+                    className='mt-1'
+                    value={filters.chieucaoCriteria}
+                    onChange={(e) => handleCriteriaChange('chieucaoCriteria', e.target.value as '>' | '<' | '=')}
+                  >
+                    <option value='='>=</option>
+                    <option value='>'>&gt;</option>
+                    <option value='<'>&lt;</option>
+                  </Select>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo chiều cao'
+                    value={filters.chieucao}
+                    onChange={(e) => handleFilterChange('chieucao', e.target.value)}
+                  />
+                </>
+              )}
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <div className='flex items-center'>
+                Cân nặng (kg)
+                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('cannang')} />
+              </div>
+              {showFilter.cannang && (
+                <>
+                  <Select
+                    className='mt-1'
+                    value={filters.cannangCriteria}
+                    onChange={(e) => handleCriteriaChange('cannangCriteria', e.target.value as '>' | '<' | '=')}
+                  >
+                    <option value='='>=</option>
+                    <option value='>'>&gt;</option>
+                    <option value='<'>&lt;</option>
+                  </Select>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo cân nặng'
+                    value={filters.cannang}
+                    onChange={(e) => handleFilterChange('cannang', e.target.value)}
+                  />
+                </>
+              )}
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <div className='flex items-center'>
+                BMI
+                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('bmi')} />
+              </div>
+              {showFilter.bmi && (
+                <>
+                  <Select
+                    className='mt-1'
+                    value={filters.bmiCriteria}
+                    onChange={(e) => handleCriteriaChange('bmiCriteria', e.target.value as '>' | '<' | '=')}
+                  >
+                    <option value='='>=</option>
+                    <option value='>'>&gt;</option>
+                    <option value='<'>&lt;</option>
+                  </Select>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo BMI'
+                    value={filters.bmi}
+                    onChange={(e) => handleFilterChange('bmi', e.target.value)}
+                  />
+                </>
+              )}
+            </Table.HeadCell>
             <Table.HeadCell>Hành động</Table.HeadCell>
           </Table.Head>
           <Table.Body className='divide-y'>
-            {filteredChildren.map((child, index) => (
+            {filteredChildren.slice(0, displayCount).map((child, index) => (
               <Table.Row key={index} className='bg-white hover:bg-gray-100'>
                 <Table.Cell>{child.hoten}</Table.Cell>
                 <Table.Cell>{new Date(child.ngaysinh).toLocaleDateString()}</Table.Cell>
@@ -229,6 +453,11 @@ const ChildrenManagement: React.FC = () => {
             ))}
           </Table.Body>
         </Table>
+        {displayCount < filteredChildren.length && (
+          <div className='mt-4 w-full flex justify-center'>
+            <Button onClick={handleShowMore}>Hiển thị thêm</Button>
+          </div>
+        )}
 
         {/* Add Child Modal */}
         <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
