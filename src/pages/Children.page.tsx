@@ -97,6 +97,7 @@ const ChildrenManagement: React.FC = () => {
       {/* Children Table */}
       <Table hoverable={true}>
         <Table.Head>
+          <Table.HeadCell>ID</Table.HeadCell>
           <Table.HeadCell>Name</Table.HeadCell>
           <Table.HeadCell>Birth Date</Table.HeadCell>
           <Table.HeadCell>Gender</Table.HeadCell>
@@ -108,6 +109,8 @@ const ChildrenManagement: React.FC = () => {
         <Table.Body className='divide-y'>
           {filteredChildren.map((child, index) => (
             <Table.Row key={index} className='bg-white hover:bg-gray-100'>
+              <Table.Cell>{child.maso}</Table.Cell>
+
               <Table.Cell>{child.hoten}</Table.Cell>
               <Table.Cell>{child.ngaysinh}</Table.Cell>
               <Table.Cell>{child.gioitinh}</Table.Cell>

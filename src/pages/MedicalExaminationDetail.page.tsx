@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Table, Button, TextInput, Modal } from 'flowbite-react'
+import axios from 'axios'
 
 interface Drug {
   maso_bkb: string
@@ -23,29 +24,8 @@ interface Service {
 }
 
 const MedicalRecord = () => {
-  const [drugs, setDrugs] = useState<Drug[]>([
-    {
-      maso_bkb: '1446b778-b4a0-47a8-a7fa-a5caa1f37bf3',
-      maso_th: '1e48359c-dfb1-4dc1-a8a3-e733ee86e544',
-      soluong: 200,
-      cachsd: 'KHOGN BIET',
-      maso: '1e48359c-dfb1-4dc1-a8a3-e733ee86e544',
-      ten: 'Metformin',
-      dang: 'Viên nén',
-      giaca: '10000'
-    }
-  ])
-  const [services, setServices] = useState<Service[]>([
-    {
-      madichvu: '45563343-c8a0-4d3c-a759-7c2b4a8c285a',
-      ngaythuchien: '2024-11-22T17:00:00.000Z',
-      chuandoan: 'Diagnosis: Hypertension, high blood pressure',
-      ketluan: 'Prescribed medication to control blood pressure',
-      ten: 'Noi Soi',
-      giaca: '600000',
-      mota: 'Kiem tra noi soi day day'
-    }
-  ])
+  const [drugs, setDrugs] = useState<Drug[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [isDrugModalOpen, setDrugModalOpen] = useState(false)
   const [isServiceModalOpen, setServiceModalOpen] = useState(false)
   const [newDrug, setNewDrug] = useState<Partial<Drug>>({})
@@ -68,6 +48,22 @@ const MedicalRecord = () => {
   const deleteService = (madichvu: string) => {
     setServices(services.filter((service) => service.madichvu !== madichvu))
   }
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search)
+    // Call API to get drugs and services
+    axios
+      .get(`http://localhost:4000/api/buoikhambenh/${queryParams.get('maso_bkb')}`)
+      .then((res) => {
+        //setDrugs(res.data)
+        console.log(res.data)
+        setDrugs(res.data.donthuoc)
+        setServices(res.data.lanthuchiendichvu)
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
+  }, [])
 
   return (
     <div className='p-4'>
@@ -153,13 +149,7 @@ const MedicalRecord = () => {
       <Modal show={isDrugModalOpen} onClose={() => setDrugModalOpen(false)}>
         <Modal.Header>Add Drug</Modal.Header>
         <Modal.Body>
-          <TextInput placeholder='Name' onChange={(e) => setNewDrug({ ...newDrug, ten: e.target.value })} />
-          <TextInput placeholder='Form' onChange={(e) => setNewDrug({ ...newDrug, dang: e.target.value })} />
-          <TextInput
-            placeholder='Price'
-            type='number'
-            onChange={(e) => setNewDrug({ ...newDrug, giaca: e.target.value })}
-          />
+          <TextInput placeholder='Mã thuốc' onChange={(e) => setNewDrug({ ...newDrug, ten: e.target.value })} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={addDrug}>Add</Button>
@@ -173,16 +163,7 @@ const MedicalRecord = () => {
       <Modal show={isServiceModalOpen} onClose={() => setServiceModalOpen(false)}>
         <Modal.Header>Add Service</Modal.Header>
         <Modal.Body>
-          <TextInput placeholder='Name' onChange={(e) => setNewService({ ...newService, ten: e.target.value })} />
-          <TextInput
-            placeholder='Description'
-            onChange={(e) => setNewService({ ...newService, mota: e.target.value })}
-          />
-          <TextInput
-            placeholder='Price'
-            type='number'
-            onChange={(e) => setNewService({ ...newService, giaca: e.target.value })}
-          />
+          <TextInput placeholder='Mã dịch vụ' onChange={(e) => setNewService({ ...newService, ten: e.target.value })} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={addService}>Add</Button>
