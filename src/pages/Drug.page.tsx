@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Table, Button, Modal, TextInput, Select, Alert } from 'flowbite-react'
 import { getAllDrugsApi, addDrugApi, updateDrugApi, deleteDrugApi } from '../api/thuoc'
+
+import { GiMedicines } from 'react-icons/gi'
+
 interface Drug {
   maso: string
   ten: string
@@ -156,7 +159,11 @@ const DrugPage = () => {
           </Alert>
         </div>
       )}
-      <h1 className='text-3xl text-center font-bold my-8'>Drug Management</h1>
+      <div className='flex justify-center my-8 text-sky-900'>
+        <GiMedicines className='my-auto me-6' />
+        <h1 className='text-3xl text-center font-bold '> Drug Management</h1>
+        <GiMedicines className='my-auto ms-6' />
+      </div>
       <div className='m-8 flex justify-between'>
         <Button onClick={() => setIsAddModalOpen(true)}>Add New Drug</Button>
 
