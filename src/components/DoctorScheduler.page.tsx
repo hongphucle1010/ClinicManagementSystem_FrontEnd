@@ -42,6 +42,8 @@ const DoctorScheduleComponent: React.FC = () => {
 
   return (
     <div className='p-6'>
+      <h1 className='text-2xl font-bold mb-4'>Thống kê về số tiền khám của trẻ </h1>
+
       <div className='mb-4 flex gap-3'>
         <div className='flex-grow'>
           <label htmlFor='ngay' className='block text-sm font-medium text-gray-700'>
