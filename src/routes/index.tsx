@@ -2,7 +2,7 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import ParentPage from '../pages/Parent.page'
-import ChildrenPage from '../pages/Children.page'
+import ChildrenPage from '../pages/ChildrenManagement/Children.page'
 import MedicalExaminationPage from '../pages/MedicalExamination.page'
 import MedicalExaminationDetailPage from '../pages/MedicalExaminationDetail.page'
 import LandingPage from '../pages/LandingPage'
