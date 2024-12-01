@@ -1,13 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Button, Table, Modal, TextInput, Select } from 'flowbite-react'
-import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { addChildrenApi, deleteChildrenApi, getChildrenInfoApi, updateChildrenApi } from '../../api/benhnhi'
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { AxiosError } from 'axios'
-import { FaFilter } from 'react-icons/fa' // Import the filter icon from react-icons
+import { IoFilterCircle } from 'react-icons/io5' // Import the filter icon from react-icons
+
+const numberOfRecords = 5
+
+const FilterPopup: React.FC<{
+  show: boolean
+  onClose: () => void
+  children: React.ReactNode
+}> = ({ show, onClose, children }) => {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+    if (show) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [show, onClose])
+
+  if (!show) return null
+  return (
+    <div ref={ref} className='absolute top-6 z-10 bg-slate-500 bg-opacity-50 p-2 shadow-lg rounded-xl'>
+      <div className='flex gap-2'>{children}</div>
+    </div>
+  )
+}
 
 const ChildrenManagement: React.FC = () => {
   const [children, setChildren] = useState<Child[]>([])
@@ -20,7 +52,7 @@ const ChildrenManagement: React.FC = () => {
   const [childToDelete, setChildToDelete] = useState<string | null>(null)
   const [sortField, setSortField] = useState<keyof Child>('hoten')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-  const [displayCount, setDisplayCount] = useState<number>(8)
+  const [displayCount, setDisplayCount] = useState<number>(numberOfRecords)
   const navigate = useNavigate()
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
@@ -207,7 +239,7 @@ const ChildrenManagement: React.FC = () => {
   }
 
   const handleShowMore = () => {
-    setDisplayCount(displayCount + 8)
+    setDisplayCount(displayCount + numberOfRecords)
   }
 
   useEffect(() => {
@@ -288,59 +320,74 @@ const ChildrenManagement: React.FC = () => {
         <Table hoverable={true}>
           <Table.Head>
             <Table.HeadCell>
-              <div className='flex items-center'>
-                Tên
-                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('hoten')} />
+              <div className='relative'>
+                <div className='flex items-center'>
+                  Tên
+                  <IoFilterCircle className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('hoten')} />
+                </div>
+                <FilterPopup show={showFilter.hoten} onClose={() => setShowFilter({ ...showFilter, hoten: false })}>
+                  <TextInput
+                    className='mt-1'
+                    placeholder='Lọc theo tên'
+                    value={filters.hoten}
+                    onChange={(e) => handleFilterChange('hoten', e.target.value)}
+                  />
+                </FilterPopup>
               </div>
-              {showFilter.hoten && (
-                <TextInput
-                  className='mt-1'
-                  placeholder='Lọc theo tên'
-                  value={filters.hoten}
-                  onChange={(e) => handleFilterChange('hoten', e.target.value)}
-                />
-              )}
             </Table.HeadCell>
             <Table.HeadCell>
-              <div className='flex items-center'>
-                Ngày sinh
-                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('ngaysinh')} />
-              </div>
-              {showFilter.ngaysinh && (
-                <TextInput
-                  className='mt-1'
-                  type='date'
-                  value={filters.ngaysinh}
-                  onChange={(e) => handleFilterChange('ngaysinh', e.target.value)}
-                />
-              )}
-            </Table.HeadCell>
-            <Table.HeadCell>
-              <div className='flex items-center'>
-                Giới tính
-                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('gioitinh')} />
-              </div>
-              {showFilter.gioitinh && (
-                <Select
-                  className='mt-1'
-                  value={filters.gioitinh}
-                  onChange={(e) => handleFilterChange('gioitinh', e.target.value)}
+              <div className='relative'>
+                <div className='flex items-center'>
+                  Ngày sinh
+                  <IoFilterCircle className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('ngaysinh')} />
+                </div>
+                <FilterPopup
+                  show={showFilter.ngaysinh}
+                  onClose={() => setShowFilter({ ...showFilter, ngaysinh: false })}
                 >
-                  <option value=''>Tất cả</option>
-                  <option value='Nam'>Nam</option>
-                  <option value='Nữ'>Nữ</option>
-                </Select>
-              )}
+                  <TextInput
+                    className='mt-1'
+                    type='date'
+                    value={filters.ngaysinh}
+                    onChange={(e) => handleFilterChange('ngaysinh', e.target.value)}
+                  />
+                </FilterPopup>
+              </div>
             </Table.HeadCell>
             <Table.HeadCell>
-              <div className='flex items-center'>
-                Chiều cao (cm)
-                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('chieucao')} />
-              </div>
-              {showFilter.chieucao && (
-                <>
+              <div className='relative'>
+                <div className='flex items-center'>
+                  Giới tính
+                  <IoFilterCircle className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('gioitinh')} />
+                </div>
+                <FilterPopup
+                  show={showFilter.gioitinh}
+                  onClose={() => setShowFilter({ ...showFilter, gioitinh: false })}
+                >
                   <Select
                     className='mt-1'
+                    value={filters.gioitinh}
+                    onChange={(e) => handleFilterChange('gioitinh', e.target.value)}
+                  >
+                    <option value=''>Tất cả</option>
+                    <option value='Nam'>Nam</option>
+                    <option value='Nữ'>Nữ</option>
+                  </Select>
+                </FilterPopup>
+              </div>
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <div className='relative'>
+                <div className='flex items-center'>
+                  Chiều cao (cm)
+                  <IoFilterCircle className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('chieucao')} />
+                </div>
+                <FilterPopup
+                  show={showFilter.chieucao}
+                  onClose={() => setShowFilter({ ...showFilter, chieucao: false })}
+                >
+                  <Select
+                    className='mt-1 w-16 flex-shrink-0'
                     value={filters.chieucaoCriteria}
                     onChange={(e) => handleCriteriaChange('chieucaoCriteria', e.target.value as '>' | '<' | '=')}
                   >
@@ -349,23 +396,23 @@ const ChildrenManagement: React.FC = () => {
                     <option value='<'>&lt;</option>
                   </Select>
                   <TextInput
-                    className='mt-1'
+                    className='mt-1 w-36'
                     placeholder='Lọc theo chiều cao'
                     value={filters.chieucao}
                     onChange={(e) => handleFilterChange('chieucao', e.target.value)}
                   />
-                </>
-              )}
+                </FilterPopup>
+              </div>
             </Table.HeadCell>
             <Table.HeadCell>
-              <div className='flex items-center'>
-                Cân nặng (kg)
-                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('cannang')} />
-              </div>
-              {showFilter.cannang && (
-                <>
+              <div className='relative'>
+                <div className='flex items-center'>
+                  Cân nặng (kg)
+                  <IoFilterCircle className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('cannang')} />
+                </div>
+                <FilterPopup show={showFilter.cannang} onClose={() => setShowFilter({ ...showFilter, cannang: false })}>
                   <Select
-                    className='mt-1'
+                    className='mt-1 w-16 flex-shrink-0'
                     value={filters.cannangCriteria}
                     onChange={(e) => handleCriteriaChange('cannangCriteria', e.target.value as '>' | '<' | '=')}
                   >
@@ -374,23 +421,23 @@ const ChildrenManagement: React.FC = () => {
                     <option value='<'>&lt;</option>
                   </Select>
                   <TextInput
-                    className='mt-1'
+                    className='mt-1 w-36'
                     placeholder='Lọc theo cân nặng'
                     value={filters.cannang}
                     onChange={(e) => handleFilterChange('cannang', e.target.value)}
                   />
-                </>
-              )}
+                </FilterPopup>
+              </div>
             </Table.HeadCell>
             <Table.HeadCell>
-              <div className='flex items-center'>
-                BMI
-                <FaFilter className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('bmi')} />
-              </div>
-              {showFilter.bmi && (
-                <>
+              <div className='relative'>
+                <div className='flex items-center'>
+                  BMI
+                  <IoFilterCircle className='w-4 h-4 ml-1 cursor-pointer' onClick={() => toggleFilter('bmi')} />
+                </div>
+                <FilterPopup show={showFilter.bmi} onClose={() => setShowFilter({ ...showFilter, bmi: false })}>
                   <Select
-                    className='mt-1'
+                    className='mt-1 w-16 flex-shrink-0'
                     value={filters.bmiCriteria}
                     onChange={(e) => handleCriteriaChange('bmiCriteria', e.target.value as '>' | '<' | '=')}
                   >
@@ -399,13 +446,13 @@ const ChildrenManagement: React.FC = () => {
                     <option value='<'>&lt;</option>
                   </Select>
                   <TextInput
-                    className='mt-1'
+                    className='mt-1 w-36'
                     placeholder='Lọc theo BMI'
                     value={filters.bmi}
                     onChange={(e) => handleFilterChange('bmi', e.target.value)}
                   />
-                </>
-              )}
+                </FilterPopup>
+              </div>
             </Table.HeadCell>
             <Table.HeadCell>Hành động</Table.HeadCell>
           </Table.Head>
