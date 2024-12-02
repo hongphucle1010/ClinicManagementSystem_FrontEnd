@@ -26,21 +26,27 @@ const GeminiChatbot: React.FC = () => {
   // Fetch services and drugs from API
   const fetchData = async () => {
     try {
-      const [servicesResponse, drugsResponse] = await Promise.all([
+      const [servicesResponse, drugsResponse, doctorsResponse] = await Promise.all([
         axios.get('http://localhost:4000/api/dichvukham/'),
-        axios.get('http://localhost:4000/api/thuoc/')
+        axios.get('http://localhost:4000/api/thuoc/'),
+        axios.get('http://localhost:4000/api/bacsi/')
       ])
 
       const drugs = drugsResponse.data.map((drug: any) => `${drug.ten} (${drug.dang}): ${drug.giaca} VNĐ`).join('\n')
-
       const services = servicesResponse.data
         .map((service: any) => `${service.ten} - Giá ${service.giaca} VNĐ: ${service.mota}`)
         .join('\n')
+      const doctors = doctorsResponse.data
+        .map((doctor: any) => `Tên ${doctor.hoten} - Chuyên khoa ${doctor.chuyenkhoa} - Bằng cấp ${doctor.bangcap}`)
+        .join('\n')
 
-      return { drugs, services }
+      return { drugs, services, doctors }
     } catch (error) {
-      console.error('Failed to fetch data:', error)
-      return { drugs: 'Không thể tải dữ liệu thuốc.', services: 'Không thể tải dữ liệu dịch vụ.' }
+      return {
+        drugs: 'Không thể tải dữ liệu thuốc.',
+        services: 'Không thể tải dữ liệu dịch vụ.',
+        doctors: 'Không thể tải dữ liệu bác sĩ'
+      }
     }
   }
 
@@ -59,13 +65,14 @@ const GeminiChatbot: React.FC = () => {
           return
         }
 
-        const { drugs, services } = await fetchData()
+        const { drugs, services, doctors } = await fetchData()
 
         const initPrompt = `
-        Bạn là nhân viên tư vấn phòng khám cho bệnh nhi (dưới 18 tuổi) với các dịch vụ khám và
-        danh sách thuốc của cửa hàng được cung cấp như sau:
+        Bạn là nhân viên tư vấn phòng khám cho bệnh nhi (dưới 18 tuổi) với các dịch vụ khám,
+        danh sách thuốc, và bác sĩ của phòng khám được cung cấp như sau:
         \nDanh sách thuốc:\n${drugs}
         \nDanh sách dịch vụ:\n${services}
+        \nDanh sách bác sĩ:\n${doctors}
         Hãy trả lời các câu hỏi về để tư vấn dịch vụ và thuốc men bằng tiếng Việt.
         Lưu ý: Khi hỏi về mua bán thuốc, phải hỏi lại tuổi bệnh nhi và giới tính nếu user không cung cấp,
         và không đưa ra câu trả lời trong lúc này cho đến khi biết tuổi và giới tính.
@@ -86,6 +93,15 @@ const GeminiChatbot: React.FC = () => {
         const chatSession = model.startChat({
           generationConfig,
           history: [
+            {
+              role: 'model',
+              parts: [
+                {
+                  text: `Tôi là trợ lý tư vấn của phòng khám cho các bệnh nhi.
+                  Nhiệm vụ của tôi là dùng dữ liệu của phòng khám để trả lời và tư vấn cho người dùng`
+                }
+              ]
+            },
             {
               role: 'user',
               parts: [{ text: initPrompt }]
