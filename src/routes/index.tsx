@@ -12,7 +12,8 @@ import RegisterExamination from '../pages/RegisterExamination/RegisterExaminatio
 import Services from '../pages/ServiceExamination.page.tsx'
 import Drugs from '../pages/Drug.page.tsx'
 import Statictis from '../pages/Statictis.page.tsx'
-import path from 'path'
+import HoaDonPage from '../pages/Hoadon.page.tsx'
+import PrescriptionDetailPage from '../pages/PrescriptionDetail.page.tsx'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -98,6 +99,22 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <Drugs />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/prescription',
+      element: (
+        <MainLayout>
+          <HoaDonPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/prescription/detail',
+      element: (
+        <MainLayout>
+          <PrescriptionDetailPage />
         </MainLayout>
       )
     }
