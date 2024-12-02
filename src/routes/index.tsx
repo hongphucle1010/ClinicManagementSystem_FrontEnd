@@ -12,9 +12,10 @@ import RegisterExamination from '../pages/RegisterExamination/RegisterExaminatio
 import DrugManagement from '../pages/ChildrenDrug.page.tsx'
 import Services from '../pages/ServiceExamination.page.tsx'
 import Drugs from '../pages/Drug.page.tsx'
-import DrugPage from '../pages/Drug.page.tsx'
 import Statictis from '../pages/Statictis.page.tsx'
 import BacSiManagement from '../pages/Bacsi.page.tsx'
+import HoaDonPage from '../pages/Hoadon.page.tsx'
+import PrescriptionDetailPage from '../pages/PrescriptionDetail.page.tsx'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -88,14 +89,6 @@ const Router: React.FC = () => {
       )
     },
     {
-      path: '/drug',
-      element: (
-        <MainLayout>
-          <DrugPage />
-        </MainLayout>
-      )
-    },
-    {
       path: '/childrendrug',
       element: (
         <MainLayout>
@@ -124,6 +117,22 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <BacSiManagement />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/prescription',
+      element: (
+        <MainLayout>
+          <HoaDonPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/prescription/detail',
+      element: (
+        <MainLayout>
+          <PrescriptionDetailPage />
         </MainLayout>
       )
     }

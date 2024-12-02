@@ -11,11 +11,20 @@ import { apiClient } from '.'
 //   return res.data
 // }
 
-export const getBillHistoryApi = async (params: URLSearchParams) => {
+export const getSumBillHistoryApi = async (params: URLSearchParams) => {
   const from = params.get('from')
   const to = params.get('to')
 
   const endpoint = `/hoadon/sumhoadon?from=${from}&to=${to}`
+  const res = await apiClient.get(endpoint)
+  return res.data
+}
+
+export const getBillHistoryApi = async (params: URLSearchParams) => {
+  const from = params.get('from')
+  const to = params.get('to')
+
+  const endpoint = `/hoadon/all?from=${from}&to=${to}`
   const res = await apiClient.get(endpoint)
   return res.data
 }

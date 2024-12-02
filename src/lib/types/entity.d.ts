@@ -32,6 +32,9 @@ interface MedicalExamination {
   ketluan: string
   maso_bn: string
   cccd_bs: string
+  chuyenkhoa: string
+  bangcap: string
+  cc_hanhnghe: string
 }
 
 interface SoluongDrug {
@@ -49,9 +52,17 @@ interface Drug {
   maso: string
   ten: string
   dang: string
-  soluong: number
-  giaca: number
+  tong_so_luong: number
+  tong_gia_tien: number
   ms: string
+}
+interface Bill {
+  maso: string
+  ngaytao: string
+  tongtien: number
+  maso_bkb: string
+  hoten_bn: string
+  hoten_ph: string
 }
 
 interface Service {
@@ -62,7 +73,16 @@ interface Service {
   ten: string
   giaca: string
   mota: string
-  cccd_nvth: string
+  cccd_nvyt: string
+}
+
+interface Prescription {
+  maso_bkb: string
+  tongtien: number
+  ghichu: string
+  cccd_ph: string
+  cccd_tn: string
+  trangthai: string
 }
 
 interface BKB {

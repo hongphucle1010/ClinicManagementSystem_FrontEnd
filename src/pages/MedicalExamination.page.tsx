@@ -158,7 +158,8 @@ const ExaminationForm: React.FC<ExaminationFormProps> = ({ onSubmit }) => {
   const queryParams = new URLSearchParams(location.search)
   const masobenhnhi = queryParams.get('benhnhi_id') || ''
 
-  const [form, setForm] = useState<Omit<MedicalExamination, 'maso'>>({
+  const [form, setForm] = useState<MedicalExamination>({
+    maso: '', // Default empty string or appropriate value
     ngaykham: '',
     taikham: false,
     trangthai: 'Pending',
@@ -167,7 +168,10 @@ const ExaminationForm: React.FC<ExaminationFormProps> = ({ onSubmit }) => {
     chandoan: '',
     ketluan: '',
     maso_bn: masobenhnhi,
-    cccd_bs: ''
+    cccd_bs: '',
+    chuyenkhoa: '', // Default value
+    bangcap: '', // Default value
+    cc_hanhnghe: '' // Default value
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -179,10 +183,7 @@ const ExaminationForm: React.FC<ExaminationFormProps> = ({ onSubmit }) => {
     })
   }
 
-  const handleSubmit = () => {
-    const maso = crypto.randomUUID() // Generate a unique ID for the examination
-    onSubmit({ ...form, maso })
-  }
+  const handleSubmit = () => {}
 
   return (
     <div>
