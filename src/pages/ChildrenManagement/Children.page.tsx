@@ -481,7 +481,7 @@ const ChildrenManagement: React.FC = () => {
                 <Table.Cell>{child.gioitinh}</Table.Cell>
                 <Table.Cell>{child.chieucao}</Table.Cell>
                 <Table.Cell>{child.cannang}</Table.Cell>
-                <Table.Cell>{child.bmi}</Table.Cell>
+                <Table.Cell>{Number(child.bmi).toFixed(2)}</Table.Cell>
                 <Table.Cell>
                   <div className='flex gap-1'>
                     <Button

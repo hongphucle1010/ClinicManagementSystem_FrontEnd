@@ -7,13 +7,6 @@ export const getChildrenInfoApi = async (params: URLSearchParams) => {
   return res.data
 }
 
-export const getMedicalExaminationApi = async (params: URLSearchParams) => {
-  const benhnhiId = params.get('benhnhi_id')
-  const endpoint = benhnhiId ? `/buoikhambenh/benhnhi/${benhnhiId}` : '/buoikhambenh'
-  const res = await apiClient.get(endpoint)
-  return res.data
-}
-
 export const getDrugHistoryApi = async (params: URLSearchParams) => {
   const benhnhiId = params.get('searchTermDrug')
   console.log(benhnhiId)

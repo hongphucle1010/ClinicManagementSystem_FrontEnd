@@ -212,7 +212,7 @@ const DrugPage = () => {
               <Table.Row key={index} className='bg-white hover:bg-sky-100'>
                 <Table.Cell className='w-3/5'>{drug.ten}</Table.Cell>
                 <Table.Cell>{drug.dang}</Table.Cell>
-                <Table.Cell>{drug.giaca}</Table.Cell>
+                <Table.Cell>{String(drug.giaca).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</Table.Cell>
                 <Table.Cell>
                   <div className='flex gap-2'>
                     <Button size='xs' color='info' onClick={() => handleEdit(drug)}>
