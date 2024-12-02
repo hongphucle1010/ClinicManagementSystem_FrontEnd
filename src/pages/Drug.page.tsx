@@ -48,7 +48,8 @@ const DrugPage = () => {
         setDrugs(data)
         setFilteredDrugs(data)
       } catch (error) {
-        showAlert('failure', 'Failed to fetch drugs. Please try again.')
+        console.error(error)
+        showAlert('failure', 'Không thể lấy dữ liệu thuốc. Vui lòng thử lại.')
       }
     }
     fetchDrugs()
@@ -85,17 +86,17 @@ const DrugPage = () => {
         setDrugs(updatedDrugs)
         setFilteredDrugs(updatedDrugs)
         setIsEditModalOpen(false)
-        showAlert('success', 'Drug updated successfully!')
+        showAlert('success', 'Cập nhật thuốc thành công!')
       }
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: { error?: string } } }
         const axiosMessage = error as { response?: { data?: { message?: string } } }
-        const errorType = axiosMessage.response?.data?.message || 'Error: '
-        const errorMessage = axiosError.response?.data?.error || 'Failed to update drug. Please try again.'
+        const errorType = axiosMessage.response?.data?.message || 'Lỗi: '
+        const errorMessage = axiosError.response?.data?.error || 'Không thể cập nhật thuốc. Vui lòng thử lại.'
         showAlert('failure', errorType + '. ' + errorMessage)
       } else {
-        showAlert('failure', 'Failed to update drug. Please try again.')
+        showAlert('failure', 'Không thể cập nhật thuốc. Vui lòng thử lại.')
       }
     }
   }
@@ -108,16 +109,16 @@ const DrugPage = () => {
       setFilteredDrugs(updatedDrugs)
       setIsAddModalOpen(false)
       setNewDrug({ maso: '', ten: '', dang: '', giaca: 0 })
-      showAlert('success', 'New drug added successfully!')
+      showAlert('success', 'Thêm thuốc mới thành công!')
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: { error?: string } } }
         const axiosMessage = error as { response?: { data?: { message?: string } } }
-        const errorType = axiosMessage.response?.data?.message || 'Error: '
-        const errorMessage = axiosError.response?.data?.error || 'Failed to add drug. Please try again.'
+        const errorType = axiosMessage.response?.data?.message || 'Lỗi: '
+        const errorMessage = axiosError.response?.data?.error || 'Không thể thêm thuốc. Vui lòng thử lại.'
         showAlert('failure', errorType + '. ' + errorMessage)
       } else {
-        showAlert('failure', 'Failed to add drug. Please try again.')
+        showAlert('failure', 'Không thể thêm thuốc. Vui lòng thử lại.')
       }
     }
   }
@@ -136,15 +137,15 @@ const DrugPage = () => {
         const updatedDrugs = drugs.filter((drug) => drug.maso !== selectedDrug.maso)
         setDrugs(updatedDrugs)
         setFilteredDrugs(updatedDrugs)
-        showAlert('success', 'Drug deleted successfully!')
+        showAlert('success', 'Xóa thuốc thành công!')
       }
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: { error?: string } } }
-        const errorMessage = axiosError.response?.data?.error || 'Failed to delete drug'
+        const errorMessage = axiosError.response?.data?.error || 'Không thể xóa thuốc'
         showAlert('failure', errorMessage)
       } else {
-        showAlert('failure', 'An unknown error occurred.')
+        showAlert('failure', 'Đã xảy ra lỗi không xác định.')
       }
     }
   }
@@ -161,30 +162,30 @@ const DrugPage = () => {
       )}
       <div className='flex justify-center my-8 text-sky-900'>
         <GiMedicines className='my-auto me-6' />
-        <h1 className='text-3xl text-center font-bold '> Drug Management</h1>
+        <h1 className='text-3xl text-center font-bold '> Quản lý thuốc</h1>
         <GiMedicines className='my-auto ms-6' />
       </div>
       <div className='m-8 flex justify-between'>
-        <Button onClick={() => setIsAddModalOpen(true)}>Add New Drug</Button>
+        <Button onClick={() => setIsAddModalOpen(true)}>Thêm thuốc mới</Button>
 
         {/* Search by Name */}
         <TextInput
           className='w-1/2'
           color='info'
-          placeholder='Search by drug name...'
+          placeholder='Tìm kiếm theo tên thuốc...'
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
         />
         <div className='flex flex-col md:flex-row gap-4'>
           {/* Sort by Price */}
           <Select value={sortOrder} onChange={(e) => handleSort(e.target.value as 'asc' | 'desc')}>
-            <option value='asc'>Price: Low to High</option>
-            <option value='desc'>Price: High to Low</option>
+            <option value='asc'>Giá: Thấp đến Cao</option>
+            <option value='desc'>Giá: Cao đến Thấp</option>
           </Select>
 
           {/* Filter by Type */}
           <Select value={filterType} onChange={(e) => handleFilter(e.target.value)}>
-            <option value=''>All Types</option>
+            <option value=''>Tất cả các loại</option>
             <option value='Viên'>Viên</option>
             <option value='Chai'>Chai</option>
             <option value='Hộp'>Hộp</option>
@@ -201,10 +202,10 @@ const DrugPage = () => {
       <div className='m-8'>
         <Table hoverable={true}>
           <Table.Head>
-            <Table.HeadCell className='w-3/5'>Drug Name</Table.HeadCell>
-            <Table.HeadCell>Form</Table.HeadCell>
-            <Table.HeadCell>Price (VNĐ)</Table.HeadCell>
-            <Table.HeadCell>Actions</Table.HeadCell>
+            <Table.HeadCell className='w-3/5'>Tên thuốc</Table.HeadCell>
+            <Table.HeadCell>Dạng</Table.HeadCell>
+            <Table.HeadCell>Giá (VNĐ)</Table.HeadCell>
+            <Table.HeadCell>Hành động</Table.HeadCell>
           </Table.Head>
           <Table.Body className='divide-y'>
             {filteredDrugs.map((drug, index) => (
@@ -215,10 +216,10 @@ const DrugPage = () => {
                 <Table.Cell>
                   <div className='flex gap-2'>
                     <Button size='xs' color='info' onClick={() => handleEdit(drug)}>
-                      Edit
+                      Chỉnh sửa
                     </Button>
                     <Button size='xs' color='failure' onClick={() => handleDeleteConfirmation(drug.maso)}>
-                      Delete
+                      Xóa
                     </Button>
                   </div>
                 </Table.Cell>
@@ -230,28 +231,28 @@ const DrugPage = () => {
 
       {/* Delete Confirmation Modal */}
       <Modal show={isDeleteConfirmModalOpen} onClose={() => setIsDeleteConfirmModalOpen(false)}>
-        <Modal.Header>Confirm Deletion</Modal.Header>
+        <Modal.Header>Xác nhận xóa</Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete the drug: <strong>{selectedDrug?.ten}</strong>?
+          Bạn có chắc chắn muốn xóa thuốc: <strong>{selectedDrug?.ten}</strong>?
         </Modal.Body>
         <Modal.Footer>
           <Button color='failure' onClick={handleDelete}>
-            Yes, Delete
+            Có, Xóa
           </Button>
           <Button color='gray' onClick={() => setIsDeleteConfirmModalOpen(false)}>
-            Cancel
+            Hủy
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Edit Modal */}
       <Modal show={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-        <Modal.Header>Edit Drug</Modal.Header>
+        <Modal.Header>Chỉnh sửa thuốc</Modal.Header>
         <Modal.Body>
           {selectedDrug && (
             <div>
               <div className='mb-4'>
-                <label className='block mb-2 text-sm font-medium text-gray-700'>Drug Name</label>
+                <label className='block mb-2 text-sm font-medium text-gray-700'>Tên thuốc</label>
                 <TextInput
                   value={selectedDrug.ten}
                   onChange={(e) =>
@@ -263,7 +264,7 @@ const DrugPage = () => {
                 />
               </div>
               <div className='mb-4'>
-                <label className='block mb-2 text-sm font-medium text-gray-700'>Form</label>
+                <label className='block mb-2 text-sm font-medium text-gray-700'>Dạng</label>
                 <Select
                   value={selectedDrug.dang}
                   onChange={(e) =>
@@ -287,7 +288,7 @@ const DrugPage = () => {
                 </Select>
               </div>
               <div className='mb-4'>
-                <label className='block mb-2 text-sm font-medium text-gray-700'>Price (VNĐ)</label>
+                <label className='block mb-2 text-sm font-medium text-gray-700'>Giá (VNĐ)</label>
                 <TextInput
                   type='number'
                   value={selectedDrug.giaca}
@@ -303,20 +304,20 @@ const DrugPage = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleSaveEdit}>Save</Button>
+          <Button onClick={handleSaveEdit}>Lưu</Button>
         </Modal.Footer>
       </Modal>
 
       {/* Add Modal */}
       <Modal show={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-        <Modal.Header>Add New Drug</Modal.Header>
+        <Modal.Header>Thêm thuốc mới</Modal.Header>
         <Modal.Body>
           <div>
             <div className='mb-4'>
-              <label className='block mb-2 text-sm font-medium text-gray-700'>Drug Name</label>
+              <label className='block mb-2 text-sm font-medium text-gray-700'>Tên thuốc</label>
               <TextInput
                 value={newDrug.ten}
-                placeholder='Enter drug name...'
+                placeholder='Nhập tên thuốc...'
                 onChange={(e) =>
                   setNewDrug({
                     ...newDrug,
@@ -326,7 +327,7 @@ const DrugPage = () => {
               />
             </div>
             <div className='mb-4'>
-              <label className='block mb-2 text-sm font-medium text-gray-700'>Form</label>
+              <label className='block mb-2 text-sm font-medium text-gray-700'>Dạng</label>
               <Select
                 value={newDrug.dang}
                 onChange={(e) =>
@@ -336,7 +337,7 @@ const DrugPage = () => {
                   })
                 }
               >
-                <option value=''>Select a form</option>
+                <option value=''>Chọn dạng</option>
                 <option value='Viên'>Viên</option>
                 <option value='Chai'>Chai</option>
                 <option value='Hộp'>Hộp</option>
@@ -351,7 +352,7 @@ const DrugPage = () => {
               </Select>
             </div>
             <div className='mb-4'>
-              <label className='block mb-2 text-sm font-medium text-gray-700'>Price (VNĐ)</label>
+              <label className='block mb-2 text-sm font-medium text-gray-700'>Giá (VNĐ)</label>
               <TextInput
                 type='number'
                 value={newDrug.giaca}
@@ -366,7 +367,7 @@ const DrugPage = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleAdd}>Add</Button>
+          <Button onClick={handleAdd}>Thêm</Button>
         </Modal.Footer>
       </Modal>
     </div>

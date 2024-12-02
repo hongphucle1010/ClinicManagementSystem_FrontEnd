@@ -87,11 +87,11 @@ const MedicalRecord = () => {
       .catch((err) => {
         console.error(err.message)
       })
-  }, [])
+  }, [msbkb])
 
   return (
     <div className='p-4'>
-      <h1 className='text-xl font-bold'>Medical Record</h1>
+      <h1 className='text-xl font-bold'>Hồ Sơ Y Tế</h1>
       {/* {
       maso_bkb: "1446b778-b4a0-47a8-a7fa-a5caa1f37bf3",
       maso_th: "1e48359c-dfb1-4dc1-a8a3-e733ee86e544",
@@ -103,15 +103,15 @@ const MedicalRecord = () => {
       giaca: "10000",
     }, */}
       {/* Drugs Section */}
-      <h2 className='text-lg font-semibold mt-4'>Drugs</h2>
+      <h2 className='text-lg font-semibold mt-4'>Thuốc</h2>
 
       <Table>
         <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Use</Table.HeadCell>
-          <Table.HeadCell>Form</Table.HeadCell>
-          <Table.HeadCell>Quantity</Table.HeadCell>
-          <Table.HeadCell>Action</Table.HeadCell>
+          <Table.HeadCell>Tên</Table.HeadCell>
+          <Table.HeadCell>Cách Sử Dụng</Table.HeadCell>
+          <Table.HeadCell>Dạng</Table.HeadCell>
+          <Table.HeadCell>Số Lượng</Table.HeadCell>
+          <Table.HeadCell>Hành Động</Table.HeadCell>
         </Table.Head>
         <Table.Body>
           {drugs.map((drug) => (
@@ -122,7 +122,7 @@ const MedicalRecord = () => {
               <Table.Cell>{drug.soluong}</Table.Cell>
               <Table.Cell>
                 <Button color='failure' onClick={() => deleteDrug(drug.maso)}>
-                  Delete
+                  Xóa
                 </Button>
               </Table.Cell>
             </Table.Row>
@@ -130,7 +130,7 @@ const MedicalRecord = () => {
         </Table.Body>
       </Table>
       <Button onClick={() => setDrugModalOpen(true)} className='my-2'>
-        Add Drug
+        Thêm Thuốc
       </Button>
       {/* Services Section */}
       {/* madichvu: string
@@ -140,15 +140,15 @@ const MedicalRecord = () => {
   ten: string
   giaca: string
   mota: string */}
-      <h2 className='text-lg font-semibold mt-4'>Services</h2>
+      <h2 className='text-lg font-semibold mt-4'>Dịch Vụ</h2>
 
       <Table>
         <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Description</Table.HeadCell>
-          <Table.HeadCell>Date</Table.HeadCell>
-          <Table.HeadCell>Conclusion</Table.HeadCell>
-          <Table.HeadCell>Action</Table.HeadCell>
+          <Table.HeadCell>Tên</Table.HeadCell>
+          <Table.HeadCell>Mô Tả</Table.HeadCell>
+          <Table.HeadCell>Ngày Thực Hiện</Table.HeadCell>
+          <Table.HeadCell>Kết Luận</Table.HeadCell>
+          <Table.HeadCell>Hành Động</Table.HeadCell>
         </Table.Head>
         <Table.Body>
           {services.map((service) => (
@@ -159,7 +159,7 @@ const MedicalRecord = () => {
               <Table.Cell>{service.ketluan}</Table.Cell>
               <Table.Cell className='text-right'>
                 <Button color='failure' onClick={() => deleteService(service.madichvu)}>
-                  Delete
+                  Xóa
                 </Button>
               </Table.Cell>
             </Table.Row>
@@ -167,11 +167,11 @@ const MedicalRecord = () => {
         </Table.Body>
       </Table>
       <Button onClick={() => setServiceModalOpen(true)} className='my-2'>
-        Add Service
+        Thêm Dịch Vụ
       </Button>
       {/* Add Drug Modal */}
       <Modal show={isDrugModalOpen} onClose={() => setDrugModalOpen(false)}>
-        <Modal.Header>Add Drug</Modal.Header>
+        <Modal.Header>Thêm Thuốc</Modal.Header>
         <Modal.Body>
           <TextInput placeholder='Mã thuốc' onChange={(e) => setNewDrug({ ...newDrug, maso_th: e.target.value })} />
           <TextInput
@@ -181,16 +181,16 @@ const MedicalRecord = () => {
           <TextInput placeholder='Cách sử dụng' onChange={(e) => setNewDrug({ ...newDrug, cachsd: e.target.value })} />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={addDrug}>Add</Button>
+          <Button onClick={addDrug}>Thêm</Button>
           <Button color='gray' onClick={() => setDrugModalOpen(false)}>
-            Cancel
+            Hủy
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Add Service Modal */}
       <Modal show={isServiceModalOpen} onClose={() => setServiceModalOpen(false)}>
-        <Modal.Header>Add Service</Modal.Header>
+        <Modal.Header>Thêm Dịch Vụ</Modal.Header>
         <Modal.Body>
           <TextInput
             placeholder='Mã dịch vụ'
@@ -210,9 +210,9 @@ const MedicalRecord = () => {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={addService}>Add</Button>
+          <Button onClick={addService}>Thêm</Button>
           <Button color='gray' onClick={() => setServiceModalOpen(false)}>
-            Cancel
+            Hủy
           </Button>
         </Modal.Footer>
       </Modal>
