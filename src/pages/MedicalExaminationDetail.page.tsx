@@ -1,16 +1,99 @@
 import { useEffect, useState } from 'react'
-import { Table, Button, TextInput, Modal } from 'flowbite-react'
+import { Table, Button, Modal, Card, TextInput, Alert, Dropdown } from 'flowbite-react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import DrugSelector from '../components/DrugForm'
+import ServiceSelector from '../components/ServiceForm'
+
+const GeneralInfo = (medicalInfo: any) => {
+  return (
+    <Card className='space-y-4 p-4 border rounded-lg shadow-md'>
+      <ul className='space-y-2'>
+        <li className='text-sm'>
+          <strong>Mã số:</strong> {medicalInfo.maso}
+        </li>
+        <li className='text-sm'>
+          <strong>Ngày khám:</strong> {new Date(medicalInfo.ngaykham).toLocaleString()}
+        </li>
+        <li className='text-sm'>
+          <strong>Ngày tái khám:</strong> {medicalInfo.taikham ? 'Có' : 'Không'}
+        </li>
+        <li className='text-sm'>
+          <strong>Trạng thái:</strong> {medicalInfo.trangthai}
+        </li>
+        <li className='text-sm'>
+          <strong>Huyết áp:</strong> {medicalInfo.huyetap}
+        </li>
+        <li className='text-sm'>
+          <strong>Nhiệt độ:</strong> {medicalInfo.nhietdo}°C
+        </li>
+        <li className='text-sm'>
+          <strong>Chẩn đoán:</strong> {medicalInfo.chandoan}
+        </li>
+        <li className='text-sm'>
+          <strong>Kết luận:</strong> {medicalInfo.ketluan}
+        </li>
+        <li className='text-sm'>
+          <strong>Mã số bệnh nhân:</strong> {medicalInfo.maso_bn}
+        </li>
+        <li className='text-sm'>
+          <strong>CCCD Bác sĩ:</strong> {medicalInfo.cccd_bs}
+        </li>
+
+        <li className='text-sm'>
+          <strong>Chuyên khoa:</strong> {medicalInfo.chuyenkhoa}
+        </li>
+        <li className='text-sm'>
+          <strong>Bằng cấp:</strong> {medicalInfo.bangcap}
+        </li>
+        <li className='text-sm'>
+          <strong>Chứng chỉ hành nghề:</strong> {medicalInfo.cc_hanhnghe}
+        </li>
+      </ul>
+    </Card>
+  )
+}
 
 const MedicalRecord = () => {
   const [drugs, setDrugs] = useState<SoluongDrug[]>([])
   const [services, setServices] = useState<Service[]>([])
+  const [prescriptions, setPrescriptions] = useState<Prescription>({
+    maso_bkb: '',
+    tongtien: 0,
+    ghichu: '',
+    cccd_ph: '',
+    cccd_tn: '',
+    trangthai: 'PENDING'
+  })
+  const [hoadon, setHoadon] = useState<any>(null)
+  const navigate = useNavigate()
+
   const [isDrugModalOpen, setDrugModalOpen] = useState(false)
   const [isServiceModalOpen, setServiceModalOpen] = useState(false)
+  const [isPrescriptionModalOpen, setPrescriptionModalOpen] = useState(false)
+
   const [newDrug, setNewDrug] = useState<Partial<SoluongDrug>>({})
   const [newService, setNewService] = useState<Partial<Service>>({})
 
-  const [drugAvailable, setDrugAvailable] = useState<SoluongDrug[]>([])
+  const [medicalInfo, setMedicalInfo] = useState<MedicalExamination>({
+    maso: '',
+    ngaykham: '',
+    taikham: false,
+    trangthai: '',
+    huyetap: '',
+    nhietdo: 0,
+    chandoan: '',
+    ketluan: '',
+    maso_bn: '',
+    cccd_bs: '',
+    chuyenkhoa: '',
+    bangcap: '',
+    cc_hanhnghe: ''
+  })
+
+  const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
   const queryParams = new URLSearchParams(location.search)
   const msbkb = queryParams.get('maso_bkb')
 
@@ -58,6 +141,40 @@ const MedicalRecord = () => {
       })
   }
 
+  const addPrescription = async () => {
+    try {
+      // Send POST request using Axios
+      const data = { ...prescriptions, maso_bkb: msbkb }
+      const response = await axios.post('http://localhost:4000/api/hoadon/add', data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      // Check if the response is successful
+      if (response.status === 200) {
+        setSuccessMessage(response.data.message)
+        setError(null)
+        setPrescriptionModalOpen(false) // Close modal on success
+      } else {
+        setError(response.data.message || 'An error occurred')
+        setSuccessMessage(null)
+      }
+    } catch (error: any) {
+      // Handle errors from Axios
+      setError(error.response?.data?.message || 'Failed to connect to the server')
+      setSuccessMessage(null)
+    }
+  }
+
+  const handlePrescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setPrescriptions((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
   const deleteDrug = (maso: string) => {
     setDrugs(drugs.filter((drug) => drug.maso_th !== maso))
   }
@@ -74,35 +191,26 @@ const MedicalRecord = () => {
         console.log(res.data)
         setDrugs(res.data.donthuoc)
         setServices(res.data.lanthuchiendichvu)
+        setMedicalInfo(res.data.buoikhambenh)
+        setHoadon(res.data.hoadon)
       })
       .catch((err) => {
         console.error(err.message)
       })
-
-    axios
-      .get('http://localhost:4000/api/thuoc')
-      .then((res) => {
-        setDrugAvailable(res.data)
-      })
-      .catch((err) => {
-        console.error(err.message)
-      })
-  }, [msbkb])
+  }, [])
 
   return (
     <div className='p-4'>
-      <h1 className='text-xl font-bold'>Hồ Sơ Y Tế</h1>
-      {/* {
-      maso_bkb: "1446b778-b4a0-47a8-a7fa-a5caa1f37bf3",
-      maso_th: "1e48359c-dfb1-4dc1-a8a3-e733ee86e544",
-      soluong: 200,
-      cachsd: "KHOGN BIET",
-      maso: "1e48359c-dfb1-4dc1-a8a3-e733ee86e544",
-      ten: "Metformin",
-      dang: "Viên nén",
-      giaca: "10000",
-    }, */}
-      {/* Drugs Section */}
+      <div className='flex  gap-8 mb-4 '>
+        <h1 className='text-2xl font-bold my-auto'>Chi tiết buổi khám bệnh</h1>
+        {!hoadon ? (
+          <Button onClick={() => setPrescriptionModalOpen(true)}>Tạo hóa đơn</Button>
+        ) : (
+          <Button onClick={() => navigate('/prescription/detail?mahoadon=' + hoadon.mahoadon)}>Xem hóa đơn </Button>
+        )}
+      </div>
+      <GeneralInfo {...medicalInfo} />
+
       <h2 className='text-lg font-semibold mt-4'>Thuốc</h2>
 
       <Table>
@@ -129,18 +237,11 @@ const MedicalRecord = () => {
           ))}
         </Table.Body>
       </Table>
-      <Button onClick={() => setDrugModalOpen(true)} className='my-2'>
-        Thêm Thuốc
+      <Button onClick={() => setDrugModalOpen(true)} className='my-4 mx-auto w-1/4'>
+        Add Drug
       </Button>
-      {/* Services Section */}
-      {/* madichvu: string
-  ngaythuchien: string
-  chuandoan: string
-  ketluan: string
-  ten: string
-  giaca: string
-  mota: string */}
-      <h2 className='text-lg font-semibold mt-4'>Dịch Vụ</h2>
+
+      <h2 className='text-lg font-semibold mt-4'>Dịch vụ</h2>
 
       <Table>
         <Table.Head>
@@ -166,19 +267,14 @@ const MedicalRecord = () => {
           ))}
         </Table.Body>
       </Table>
-      <Button onClick={() => setServiceModalOpen(true)} className='my-2'>
-        Thêm Dịch Vụ
+      <Button onClick={() => setServiceModalOpen(true)} className='my-4 mx-auto w-1/4'>
+        Add Service
       </Button>
       {/* Add Drug Modal */}
       <Modal show={isDrugModalOpen} onClose={() => setDrugModalOpen(false)}>
         <Modal.Header>Thêm Thuốc</Modal.Header>
         <Modal.Body>
-          <TextInput placeholder='Mã thuốc' onChange={(e) => setNewDrug({ ...newDrug, maso_th: e.target.value })} />
-          <TextInput
-            placeholder='Số lượng'
-            onChange={(e) => setNewDrug({ ...newDrug, soluong: parseInt(e.target.value) })}
-          />
-          <TextInput placeholder='Cách sử dụng' onChange={(e) => setNewDrug({ ...newDrug, cachsd: e.target.value })} />
+          <DrugSelector newDrug={newDrug} setNewDrug={setNewDrug} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={addDrug}>Thêm</Button>
@@ -190,29 +286,67 @@ const MedicalRecord = () => {
 
       {/* Add Service Modal */}
       <Modal show={isServiceModalOpen} onClose={() => setServiceModalOpen(false)}>
-        <Modal.Header>Thêm Dịch Vụ</Modal.Header>
+        <Modal.Header>Add Service</Modal.Header>
         <Modal.Body>
-          <TextInput
-            placeholder='Mã dịch vụ'
-            onChange={(e) => setNewService({ ...newService, madichvu: e.target.value })}
-          />
-          <TextInput
-            placeholder='Chuẩn đoán'
-            onChange={(e) => setNewService({ ...newService, chuandoan: e.target.value })}
-          />
-          <TextInput
-            placeholder='Kết luận'
-            onChange={(e) => setNewService({ ...newService, ketluan: e.target.value })}
-          />
-          <TextInput
-            placeholder='CCCD nhân viên thực hiện'
-            onChange={(e) => setNewService({ ...newService, cccd_nvth: e.target.value })}
-          />
+          <ServiceSelector newService={newService} setNewService={setNewService} />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={addService}>Thêm</Button>
+          <Button onClick={addService}>Add</Button>
           <Button color='gray' onClick={() => setServiceModalOpen(false)}>
-            Hủy
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Add Service Modal */}
+      <Modal show={isPrescriptionModalOpen} onClose={() => setPrescriptionModalOpen(false)}>
+        <Modal.Header>Add Service</Modal.Header>
+        <Modal.Body>
+          {error && <Alert color='failure'>{error}</Alert>}
+          {successMessage && <Alert color='success'>{successMessage}</Alert>}
+          <div className='space-y-4'>
+            <TextInput
+              name='ghichu'
+              value={prescriptions.ghichu}
+              onChange={handlePrescriptionChange}
+              placeholder='Ghi chú'
+            />
+            <TextInput
+              name='cccd_ph'
+              value={prescriptions.cccd_ph}
+              onChange={handlePrescriptionChange}
+              placeholder='CCCD phụ huynh'
+            />
+            <TextInput
+              name='cccd_tn'
+              value={prescriptions.cccd_tn}
+              onChange={handlePrescriptionChange}
+              placeholder='CCCD thu ngân'
+            />
+            <div className='flex gap-3'>
+              <TextInput
+                name='trangthai'
+                className='flex-grow'
+                readOnly
+                value={prescriptions.trangthai}
+                placeholder='Trạng thái'
+              />
+
+              <Dropdown label='Trạng thái'>
+                <Dropdown.Item onClick={() => setPrescriptions((prev) => ({ ...prev, trangthai: 'PENDING' }))}>
+                  PENDING
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setPrescriptions((prev) => ({ ...prev, trangthai: 'PAID' }))}>
+                  PAID
+                </Dropdown.Item>
+              </Dropdown>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={addPrescription}>Thêm</Button>
+          <Button color='gray' onClick={() => setPrescriptionModalOpen(false)}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>

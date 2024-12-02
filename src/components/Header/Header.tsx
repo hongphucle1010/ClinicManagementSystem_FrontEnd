@@ -24,6 +24,10 @@ const Header: React.FC = () => {
           <NavLink to='/doctor' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
             Bác Sĩ
           </NavLink>
+          <NavLink to='/prescription' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
+            Hóa đơn
+          </NavLink>
+
           <NavLink to='/statistics' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
             Thống kê
           </NavLink>
