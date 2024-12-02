@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, Modal, Card, TextInput, Alert, Dropdown } from 'flowbite-react'
 import axios from 'axios'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { useNavigate } from 'react-router-dom'
 import DrugSelector from '../components/DrugForm'
 import ServiceSelector from '../components/ServiceForm'
@@ -107,7 +109,34 @@ const MedicalRecord = () => {
       CACHSD: newDrug.cachsd
     }
     console.log(data)
-    axios.post(`http://localhost:4000/api/soluongthuoc/add`, data)
+    axios
+      .post(`http://localhost:4000/api/soluongthuoc/add`, data)
+      .then(() => {
+        toast.success('Thêm thuốc thành công!', {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
+      .catch((err) => {
+        toast.error(err.message, {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
     axios
       .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
       .then((res) => {
@@ -125,9 +154,34 @@ const MedicalRecord = () => {
     setServiceModalOpen(false)
     const data = { ...newService, maso_bkb: msbkb }
     console.log(data)
-    axios.post(`http://localhost:4000/api/lanthuchiendichvu/add`, data).catch((err) => {
-      console.error(err.message)
-    })
+    axios
+      .post(`http://localhost:4000/api/lanthuchiendichvu/add`, data)
+      .then(() => {
+        toast.success('Thêm dịch vụ thành công!', {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
+      .catch((err) => {
+        toast.error(err.message, {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
     axios
       .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
       .then((res) => {
@@ -201,16 +255,18 @@ const MedicalRecord = () => {
 
   return (
     <div className='p-4'>
-      <div className='flex  gap-8 mb-4 '>
-        <h1 className='text-2xl font-bold my-auto'>Chi tiết buổi khám bệnh</h1>
-        {!hoadon ? (
-          <Button onClick={() => setPrescriptionModalOpen(true)}>Tạo hóa đơn</Button>
-        ) : (
-          <Button onClick={() => navigate('/prescription/detail?mahoadon=' + hoadon.mahoadon)}>Xem hóa đơn </Button>
-        )}
-      </div>
-      <GeneralInfo {...medicalInfo} />
-
+      <h1 className='text-xl font-bold'>Hồ Sơ Y Tế</h1>
+      {/* {
+      maso_bkb: "1446b778-b4a0-47a8-a7fa-a5caa1f37bf3",
+      maso_th: "1e48359c-dfb1-4dc1-a8a3-e733ee86e544",
+      soluong: 200,
+      cachsd: "KHOGN BIET",
+      maso: "1e48359c-dfb1-4dc1-a8a3-e733ee86e544",
+      ten: "Metformin",
+      dang: "Viên nén",
+      giaca: "10000",
+    }, */}
+      {/* Drugs Section */}
       <h2 className='text-lg font-semibold mt-4'>Thuốc</h2>
 
       <Table>
