@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { TextInput, Table, Button } from 'flowbite-react'
 
 // Define types for the Children data
 interface ChildrenData {
-  benh_nhi: string
-  hoten: string
-  thuoc_total: number
-  dich_vu_total: number
-  total: number
+  maso_bn: string
+  child_name: string
+  total_drug_fee: number
+  total_service: number
+  total_fee: number
 }
 
 const ChildrenCostsPage: React.FC = () => {
@@ -18,9 +18,11 @@ const ChildrenCostsPage: React.FC = () => {
 
   const handleClick = () => {
     axios
-      .get('http://localhost:4000/api/statistic/getchildrentcost/' + searchQuery)
+      .get('http://localhost:4000/api/statistic/getchildrencost/' + searchQuery)
       .then((response) => {
-        setChildrenData(response.data)
+        console.log(response)
+        console.log(response.data.data)
+        setChildrenData(response.data.data)
       })
       .catch((error) => {
         console.error('Error fetching data', error)
@@ -54,13 +56,13 @@ const ChildrenCostsPage: React.FC = () => {
         </Table.Head>
         <Table.Body>
           {ChildrenData.length > 0 ? (
-            ChildrenData.map((Children) => (
-              <Table.Row key={Children.benh_nhi}>
-                <Table.Cell>{Children.benh_nhi}</Table.Cell>
-                <Table.Cell>{Children.hoten}</Table.Cell>
-                <Table.Cell>{Children.thuoc_total}</Table.Cell>
-                <Table.Cell>{Children.dich_vu_total}</Table.Cell>
-                <Table.Cell>{Children.total}</Table.Cell>
+            ChildrenData.map((Children, key) => (
+              <Table.Row key={key}>
+                <Table.Cell>{Children.maso_bn}</Table.Cell>
+                <Table.Cell>{Children.child_name}</Table.Cell>
+                <Table.Cell>{Children.total_drug_fee}</Table.Cell>
+                <Table.Cell>{Children.total_service}</Table.Cell>
+                <Table.Cell>{Children.total_fee}</Table.Cell>
               </Table.Row>
             ))
           ) : (

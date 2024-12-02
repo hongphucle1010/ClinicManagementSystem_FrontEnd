@@ -18,6 +18,15 @@ const Header: React.FC = () => {
           <NavLink to='/medicalexamination' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
             Buổi khám bệnh
           </NavLink>
+          <NavLink to='/drug' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
+            Lịch sử thuốc
+          </NavLink>
+          <NavLink to='/childrendrug' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
+            Lịch sử thuốc của trẻ
+          </NavLink>
+          <NavLink to='/doctor' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
+            Bác Sĩ
+          </NavLink>
           <NavLink to='/statistics' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
             Thống kê
           </NavLink>
