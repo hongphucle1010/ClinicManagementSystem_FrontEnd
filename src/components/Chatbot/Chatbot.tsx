@@ -217,13 +217,8 @@ const GeminiChatbot: React.FC = () => {
 
       {/* Chatbot Launcher Button */}
       {!isChatOpen && (
-        <Button
-          className='flex justify-between items-center fixed bottom-4 right-4 rounded-full'
-          color='success'
-          onClick={toggleChat}
-        >
-          <TbMessageChatbot className='m-auto me-2 text-2xl' />
-          <p className='m-auto text-xl'>Hỗ trợ</p>
+        <Button className='fixed bottom-4 right-4 rounded-full' color='success' onClick={toggleChat}>
+          <TbMessageChatbot className='m-auto text-2xl' />
         </Button>
       )}
     </div>
