@@ -3,7 +3,7 @@ import { Button, Datepicker, Table, TextInput } from 'flowbite-react'
 // import { useEffect } from 'react'
 // import { useLocation } from 'react-router-dom'
 // import { useNavigate } from 'react-router-dom'
-import { getDrugHistoryApi } from '../api/benhnhi'
+import { getDrugHistoryApi, getDrugHistoryV2Api } from '../api/benhnhi'
 import { getBillHistoryApi, getSumBillHistoryApi } from '../api/hoadon'
 // import { Bounce, toast } from 'react-toastify'
 
@@ -21,12 +21,17 @@ const DrugManagement: React.FC = () => {
     setSearchTermDrug(e.target.value)
   }
   const [pillsInfo, setPillsInfo] = useState([] as Drug[])
+  const [pillsV2, setPillsV2] = useState([] as DrugWithDate[])
   const submitFormDrug = () => {
     console.log('clicked', searchTermDrug)
     const queryParams = new URLSearchParams({ searchTermDrug })
     getDrugHistoryApi(queryParams).then((res) => {
       console.log(res.pills)
       setPillsInfo(res.pills)
+    })
+    getDrugHistoryV2Api(queryParams).then((res) => {
+      console.log(res.pills)
+      setPillsV2(res.pills)
     })
   }
 
@@ -35,6 +40,18 @@ const DrugManagement: React.FC = () => {
   const [searchBill, setSearchBill] = useState(0)
   const [BillsInfo, setBillsInfo] = useState([] as Bill[])
   // const [billInfo, setBillInfo] = useState(0)
+  const clearDrug = () => {
+    setSearchTermDrug('')
+    setPillsInfo([])
+    setPillsV2([])
+  }
+
+  const clearBill = () => {
+    setSearchFromDay(new Date('2023-11-23'))
+    setSearchToDay(new Date('2025-11-23'))
+    setSearchBill(0)
+    setBillsInfo([])
+  }
   const submitFormBill = () => {
     const queryParams = new URLSearchParams({
       from: formatDate(searchFromDay as Date),
@@ -55,7 +72,7 @@ const DrugManagement: React.FC = () => {
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>
       <div>
-        <div className='text-2xl font-bold mb-6'>Drug Management</div>
+        <div className='text-4xl font-bold mb-6'>Drug Management</div>
 
         {/* Search Bar */}
         <div className='mb-4'>
@@ -69,10 +86,45 @@ const DrugManagement: React.FC = () => {
         </div>
 
         {/* Add Child Button */}
-        <div className='mb-6'>
+        <div className='mb-6 flex justify-start'>
           <Button onClick={submitFormDrug}>Search</Button>
+          <Button onClick={clearDrug} className='ml-4'>
+            Clear
+          </Button>
         </div>
-        <div className='mb-4'>Số lượng: {pillsInfo.length} </div>
+
+        <div className='mb-4'>Thông tin cụ thể. Số lượng: {pillsV2.length} </div>
+
+        <Table striped hoverable={true}>
+          <Table.Head>
+            <Table.HeadCell>Tên</Table.HeadCell>
+            <Table.HeadCell>Dạng</Table.HeadCell>
+            <Table.HeadCell>Số lượng</Table.HeadCell>
+            <Table.HeadCell>Thời gian khám</Table.HeadCell>
+            <Table.HeadCell>Mã số</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className='divide-y'>
+            {pillsV2.map((pill, index) => (
+              <Table.Row key={index} className='bg-white hover:bg-gray-100'>
+                <Table.Cell>{pill.ten}</Table.Cell>
+                <Table.Cell>{pill.dang}</Table.Cell>
+                <Table.Cell>{pill.so_luong}</Table.Cell>
+                <Table.Cell>{pill.thoi_gian_kham}</Table.Cell>
+                <Table.Cell>{pill.ms}</Table.Cell>
+              </Table.Row>
+            ))}
+
+            {pillsInfo.length === 0 && (
+              <Table.Row>
+                <Table.Cell className='text-center' colSpan={5}>
+                  No data found
+                </Table.Cell>
+              </Table.Row>
+            )}
+          </Table.Body>
+        </Table>
+
+        <div className='mb-4 mt-8'>Thông tin tổng thế. Số lượng: {pillsInfo.length} </div>
 
         {/* Children Table */}
         <Table hoverable={true}>
@@ -95,28 +147,43 @@ const DrugManagement: React.FC = () => {
                 <Table.Cell>{pill.ms}</Table.Cell>
               </Table.Row>
             ))}
+
+            {pillsInfo.length === 0 && (
+              <Table.Row>
+                <Table.Cell className='text-center' colSpan={5}>
+                  No data found
+                </Table.Cell>
+              </Table.Row>
+            )}
           </Table.Body>
         </Table>
       </div>
 
       <div>
-        <div className='text-2xl font-bold mb-6'>Bills Management</div>
-
-        <Datepicker
-          value={searchFromDay}
-          onChange={(e) => {
-            setSearchFromDay(e as Date)
-          }}
-        />
-        <Datepicker
-          value={searchToDay}
-          onChange={(e) => {
-            setSearchToDay(e as Date)
-          }}
-        />
+        <div className='text-4xl font-bold mb-6 mt-24'>Bills Management</div>
+        <div className='flex justify-start'>
+          <Datepicker
+            value={searchFromDay}
+            onChange={(e) => {
+              setSearchFromDay(e as Date)
+            }}
+            title='Day From'
+          />
+          <Datepicker
+            value={searchToDay}
+            onChange={(e) => {
+              setSearchToDay(e as Date)
+            }}
+            title='Day To'
+            className='ml-4'
+          />
+        </div>
         {/* Add Child Button */}
-        <div className='mb-6'>
+        <div className='mb-6 mt-4 flex justify-start'>
           <Button onClick={submitFormBill}>Search</Button>
+          <Button onClick={clearBill} className='ml-4'>
+            Clear
+          </Button>
         </div>
 
         <div className='mb-4'>Tổng hóa đơn: {searchBill} </div>
@@ -140,6 +207,13 @@ const DrugManagement: React.FC = () => {
                 <Table.Cell>{bill.hoten_ph}</Table.Cell>
               </Table.Row>
             ))}
+            {BillsInfo.length === 0 && (
+              <Table.Row>
+                <Table.Cell className='text-center' colSpan={5}>
+                  No data found
+                </Table.Cell>
+              </Table.Row>
+            )}
           </Table.Body>
         </Table>
       </div>

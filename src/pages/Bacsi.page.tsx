@@ -31,6 +31,11 @@ const BacSiManagement: React.FC = () => {
     })
   }
 
+  const clearForm = () => {
+    setSearchTerm('')
+    setBkbInfo([])
+  }
+
   return (
     <div className='p-6 bg-gray-50 min-h-screen'>
       <div>
@@ -45,22 +50,28 @@ const BacSiManagement: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Datepicker
-          value={searchFromDay}
-          onChange={(e) => {
-            setSearchFromDay(e as Date)
-          }}
-        />
-        <Datepicker
-          value={searchToDay}
-          onChange={(e) => {
-            setSearchToDay(e as Date)
-          }}
-        />
+        <div className='flex justify-start'>
+          <Datepicker
+            value={searchFromDay}
+            onChange={(e) => {
+              setSearchFromDay(e as Date)
+            }}
+          />
+          <Datepicker
+            className='ml-4'
+            value={searchToDay}
+            onChange={(e) => {
+              setSearchToDay(e as Date)
+            }}
+          />
+        </div>
 
         {/* Add Child Button */}
-        <div className='mb-6'>
+        <div className='mb-6 mt-4 flex justify-start'>
           <Button onClick={submitForm}>Get</Button>
+          <Button onClick={clearForm} className='ml-4'>
+            Clear
+          </Button>
         </div>
 
         {/* Children Table */}

@@ -17,6 +17,17 @@ export const getDrugHistoryApi = async (params: URLSearchParams) => {
   const res = await apiClient.get(endpoint)
   return res.data
 }
+
+export const getDrugHistoryV2Api = async (params: URLSearchParams) => {
+  const benhnhiId = params.get('searchTermDrug')
+  console.log(benhnhiId)
+  if (!benhnhiId) {
+    return null
+  }
+  const endpoint = `/benhnhi/pillv2/${benhnhiId}`
+  const res = await apiClient.get(endpoint)
+  return res.data
+}
 export const addChildrenApi = async (data: Partial<Child>) => {
   const res = await apiClient.post<ApiResponse<AddChildrenResponse>>('/benhnhi/add', data)
   return res.data
