@@ -49,9 +49,17 @@ interface Drug {
   maso: string
   ten: string
   dang: string
-  soluong: number
-  giaca: number
+  tong_so_luong: number
+  tong_gia_tien: number
   ms: string
+}
+interface Bill {
+  maso: string
+  ngaytao: string
+  tongtien: number
+  maso_bkb: string
+  hoten_bn: string
+  hoten_ph: string
 }
 
 interface Service {
