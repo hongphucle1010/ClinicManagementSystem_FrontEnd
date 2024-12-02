@@ -84,9 +84,9 @@ const DoctorScheduleComponent: React.FC = () => {
           <Table.Body>
             {data.map((item, index) => (
               <Table.Row key={index}>
-                <Table.Cell>{item.cccd}</Table.Cell>
+                <Table.Cell>{item.cccd.replace(/(\d{4})(?=\d)/g, '$1 ')}</Table.Cell>
                 <Table.Cell>{item.hoten}</Table.Cell>
-                <Table.Cell>{item.sdt}</Table.Cell>
+                <Table.Cell>{item.sdt.replace(/(\d{3})(\d{4})(\d{3})/, '$1 $2 $3')}</Table.Cell>
                 <Table.Cell>{item.chuyenkhoa}</Table.Cell>
                 <Table.Cell>{item.so_luong_kham}</Table.Cell>
               </Table.Row>

@@ -312,8 +312,8 @@ const ParentManagement: React.FC = () => {
           {filteredParents.slice(0, displayCount).map((Parent, index) => (
             <Table.Row key={index} className='bg-white hover:bg-gray-100'>
               <Table.Cell>{Parent.hoten}</Table.Cell>
-              <Table.Cell>{Parent.cccd}</Table.Cell>
-              <Table.Cell>{Parent.sdt}</Table.Cell>
+              <Table.Cell>{Parent.cccd.replace(/(\d{4})(?=\d)/g, '$1 ')}</Table.Cell>
+              <Table.Cell>{Parent.sdt.replace(/(\d{3})(\d{4})(\d{3})/, '$1 $2 $3')}</Table.Cell>
               <Table.Cell>
                 {`${Parent.sonha}, ${Parent.tenduong}, ${Parent.phuong}, ${Parent.huyen}, ${Parent.tinh}`}
               </Table.Cell>

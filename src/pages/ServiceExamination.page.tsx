@@ -50,6 +50,7 @@ const ServiceExamination = () => {
         setServices(data)
         setFilteredServices(data)
       } catch (e) {
+        console.error(e)
         showAlert('failure', 'Failed to fetch services. Please try again.')
       }
     }
@@ -130,14 +131,14 @@ const ServiceExamination = () => {
       )}
       <div className='flex justify-center my-8 text-sky-900'>
         <AiFillMedicineBox className='my-auto me-6' />
-        <h1 className='text-3xl text-center font-bold '> Service Management</h1>
+        <h1 className='text-3xl text-center font-bold'>Quản Lý Dịch Vụ</h1>
         <AiFillMedicineBox className='my-auto ms-6' />
       </div>
       <div className='m-8 flex justify-between'>
-        <Button onClick={() => setIsAddModalOpen(true)}>Add New Service</Button>
+        <Button onClick={() => setIsAddModalOpen(true)}>Thêm Dịch Vụ Mới</Button>
         <TextInput
           className='w-1/2'
-          placeholder='Search by service name...'
+          placeholder='Tìm kiếm theo tên dịch vụ...'
           color='info'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -150,27 +151,27 @@ const ServiceExamination = () => {
             sortServices(order)
           }}
         >
-          <option value='asc'>Price: Low to High</option>
-          <option value='desc'>Price: High to Low</option>
+          <option value='asc'>Giá: Thấp đến Cao</option>
+          <option value='desc'>Giá: Cao đến Thấp</option>
         </Select>
       </div>
       <div className='m-8'>
         <Table hoverable={true}>
           <Table.Head>
-            <Table.HeadCell>Service Name</Table.HeadCell>
-            <Table.HeadCell>Price</Table.HeadCell>
-            <Table.HeadCell className='w-3/5'>Description</Table.HeadCell>
-            <Table.HeadCell>Actions</Table.HeadCell>
+            <Table.HeadCell>Tên Dịch Vụ</Table.HeadCell>
+            <Table.HeadCell>Giá</Table.HeadCell>
+            <Table.HeadCell className='w-3/5'>Mô Tả</Table.HeadCell>
+            <Table.HeadCell>Thao Tác</Table.HeadCell>
           </Table.Head>
           <Table.Body className='divide-y'>
             {filteredServices.map((service, index) => (
               <Table.Row key={index} className='bg-white hover:bg-sky-100'>
                 <Table.Cell>{service.ten}</Table.Cell>
-                <Table.Cell>{service.giaca}</Table.Cell>
+                <Table.Cell>{String(service.giaca).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</Table.Cell>
                 <Table.Cell className='w-3/5'>{service.mota}</Table.Cell>
                 <Table.Cell>
                   <Button size='xs' color='info' onClick={() => handleEdit(service)}>
-                    Edit
+                    Sửa
                   </Button>
                 </Table.Cell>
               </Table.Row>
@@ -181,12 +182,12 @@ const ServiceExamination = () => {
 
       {/* Edit Modal */}
       <Modal show={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-        <Modal.Header>Edit Service</Modal.Header>
+        <Modal.Header>Sửa Dịch Vụ</Modal.Header>
         <Modal.Body>
           {selectedService && (
             <div>
               <div className='mb-4'>
-                <label className='block mb-2 text-sm font-medium text-gray-700'>Service Name</label>
+                <label className='block mb-2 text-sm font-medium text-gray-700'>Tên Dịch Vụ</label>
                 <TextInput
                   value={selectedService.ten}
                   onChange={(e) =>
@@ -198,7 +199,7 @@ const ServiceExamination = () => {
                 />
               </div>
               <div className='mb-4'>
-                <label className='block mb-2 text-sm font-medium text-gray-700'>Price</label>
+                <label className='block mb-2 text-sm font-medium text-gray-700'>Giá</label>
                 <TextInput
                   type='number'
                   value={selectedService.giaca}
@@ -211,7 +212,7 @@ const ServiceExamination = () => {
                 />
               </div>
               <div className='mb-4'>
-                <label className='block mb-2 text-sm font-medium text-gray-700'>Description</label>
+                <label className='block mb-2 text-sm font-medium text-gray-700'>Mô Tả</label>
                 <TextInput
                   value={selectedService.mota}
                   onChange={(e) =>
@@ -226,25 +227,25 @@ const ServiceExamination = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleSaveEdit}>Save</Button>
+          <Button onClick={handleSaveEdit}>Lưu</Button>
         </Modal.Footer>
       </Modal>
 
       {/* Add Modal */}
       <Modal show={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-        <Modal.Header>Add New Service</Modal.Header>
+        <Modal.Header>Thêm Dịch Vụ Mới</Modal.Header>
         <Modal.Body>
           <div>
             <div className='mb-4'>
-              <label className='block mb-2 text-sm font-medium text-gray-700'>Service Name</label>
+              <label className='block mb-2 text-sm font-medium text-gray-700'>Tên Dịch Vụ</label>
               <TextInput
-                placeholder='Enter the service name...'
+                placeholder='Nhập tên dịch vụ...'
                 value={newService.ten}
                 onChange={(e) => setNewService({ ...newService, ten: e.target.value })}
               />
             </div>
             <div className='mb-4'>
-              <label className='block mb-2 text-sm font-medium text-gray-700'>Price</label>
+              <label className='block mb-2 text-sm font-medium text-gray-700'>Giá</label>
               <TextInput
                 type='number'
                 value={newService.giaca}
@@ -257,17 +258,17 @@ const ServiceExamination = () => {
               />
             </div>
             <div className='mb-4'>
-              <label className='block mb-2 text-sm font-medium text-gray-700'>Description</label>
+              <label className='block mb-2 text-sm font-medium text-gray-700'>Mô Tả</label>
               <TextInput
                 value={newService.mota}
-                placeholder='Enter the description of service...'
+                placeholder='Nhập mô tả dịch vụ...'
                 onChange={(e) => setNewService({ ...newService, mota: e.target.value })}
               />
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleAdd}>Add</Button>
+          <Button onClick={handleAdd}>Thêm</Button>
         </Modal.Footer>
       </Modal>
     </div>

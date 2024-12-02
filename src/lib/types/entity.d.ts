@@ -42,7 +42,7 @@ interface SoluongDrug {
   maso_th: string
   soluong: number
   cachsd: string
-  maso: string
+  ms: string
   ten: string
   dang: string
   giaca: string
@@ -52,7 +52,17 @@ interface Drug {
   maso: string
   ten: string
   dang: string
-  soluong: number
+  tong_so_luong: number
+  tong_gia_tien: number
+  ms: string
+}
+interface Bill {
+  maso: string
+  ngaytao: string
+  tongtien: number
+  maso_bkb: string
+  hoten_bn: string
+  hoten_ph: string
 }
 
 interface Service {
@@ -73,4 +83,12 @@ interface Prescription {
   cccd_ph: string
   cccd_tn: string
   trangthai: string
+}
+
+interface BKB {
+  bkb_maso: string
+  ngaykham: string
+  trangthai: string
+  benh_nhi_maso: string
+  ten_bn: string
 }

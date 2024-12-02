@@ -215,11 +215,11 @@ const MedicalRecord = () => {
 
       <Table>
         <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Use</Table.HeadCell>
-          <Table.HeadCell>Form</Table.HeadCell>
-          <Table.HeadCell>Quantity</Table.HeadCell>
-          <Table.HeadCell>Action</Table.HeadCell>
+          <Table.HeadCell>Tên</Table.HeadCell>
+          <Table.HeadCell>Cách Sử Dụng</Table.HeadCell>
+          <Table.HeadCell>Dạng</Table.HeadCell>
+          <Table.HeadCell>Số Lượng</Table.HeadCell>
+          <Table.HeadCell>Hành Động</Table.HeadCell>
         </Table.Head>
         <Table.Body>
           {drugs.map((drug) => (
@@ -230,7 +230,7 @@ const MedicalRecord = () => {
               <Table.Cell>{drug.soluong}</Table.Cell>
               <Table.Cell>
                 <Button color='failure' onClick={() => deleteDrug(drug.maso)}>
-                  Delete
+                  Xóa
                 </Button>
               </Table.Cell>
             </Table.Row>
@@ -245,11 +245,11 @@ const MedicalRecord = () => {
 
       <Table>
         <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Description</Table.HeadCell>
-          <Table.HeadCell>Date</Table.HeadCell>
-          <Table.HeadCell>Conclusion</Table.HeadCell>
-          <Table.HeadCell>Action</Table.HeadCell>
+          <Table.HeadCell>Tên</Table.HeadCell>
+          <Table.HeadCell>Mô Tả</Table.HeadCell>
+          <Table.HeadCell>Ngày Thực Hiện</Table.HeadCell>
+          <Table.HeadCell>Kết Luận</Table.HeadCell>
+          <Table.HeadCell>Hành Động</Table.HeadCell>
         </Table.Head>
         <Table.Body>
           {services.map((service) => (
@@ -260,7 +260,7 @@ const MedicalRecord = () => {
               <Table.Cell>{service.ketluan}</Table.Cell>
               <Table.Cell className='text-right'>
                 <Button color='failure' onClick={() => deleteService(service.madichvu)}>
-                  Delete
+                  Xóa
                 </Button>
               </Table.Cell>
             </Table.Row>
@@ -272,14 +272,14 @@ const MedicalRecord = () => {
       </Button>
       {/* Add Drug Modal */}
       <Modal show={isDrugModalOpen} onClose={() => setDrugModalOpen(false)}>
-        <Modal.Header>Add Drug</Modal.Header>
+        <Modal.Header>Thêm Thuốc</Modal.Header>
         <Modal.Body>
           <DrugSelector newDrug={newDrug} setNewDrug={setNewDrug} />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={addDrug}>Add</Button>
+          <Button onClick={addDrug}>Thêm</Button>
           <Button color='gray' onClick={() => setDrugModalOpen(false)}>
-            Cancel
+            Hủy
           </Button>
         </Modal.Footer>
       </Modal>
