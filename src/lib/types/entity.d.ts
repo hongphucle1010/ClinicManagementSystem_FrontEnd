@@ -46,11 +46,19 @@ interface SoluongDrug {
 }
 
 interface Drug {
-  maso: string
   ten: string
   dang: string
   tong_so_luong: number
   tong_gia_tien: number
+  ms: string
+}
+
+interface DrugWithDate {
+  ten: string
+  dang: string
+  so_luong: number
+  thoi_gian_kham: string
+  thoi_gian_ra_don: string
   ms: string
 }
 interface Bill {
