@@ -15,7 +15,6 @@ import Drugs from '../pages/Drug.page.tsx'
 import DrugPage from '../pages/Drug.page.tsx'
 import Statictis from '../pages/Statictis.page.tsx'
 import BacSiManagement from '../pages/Bacsi.page.tsx'
-// import path from 'path'
 
 const Router: React.FC = () => {
   const userRoutes = [
