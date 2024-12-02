@@ -81,7 +81,9 @@ const MedicalExaminationManagement: React.FC = () => {
           {filteredExaminations.map((exam, index) => (
             <Table.Row key={index} className='bg-white hover:bg-gray-100'>
               <Table.Cell>{exam.maso}</Table.Cell>
-              <Table.Cell>{exam.ngaykham}</Table.Cell>
+              <Table.Cell>
+                {new Date(exam.ngaykham).toLocaleTimeString() + ' ' + new Date(exam.ngaykham).toLocaleDateString()}
+              </Table.Cell>
               <Table.Cell>{exam.taikham ? 'Có' : 'Không'}</Table.Cell>
               <Table.Cell>{exam.trangthai}</Table.Cell>
               <Table.Cell>{exam.huyetap}</Table.Cell>
