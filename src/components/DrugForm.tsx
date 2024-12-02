@@ -11,7 +11,7 @@ const DrugSelector = ({ newDrug, setNewDrug }: DrugSelectorProps) => {
   const [drugData, setDrugData] = useState<Partial<SoluongDrug>[]>([])
 
   const handleDrugSelect = (selectedDrug: Partial<SoluongDrug>) => {
-    setNewDrug({ ...newDrug, maso_th: selectedDrug.maso_th })
+    setNewDrug({ ...newDrug, maso_th: selectedDrug.maso })
   }
 
   useEffect(() => {

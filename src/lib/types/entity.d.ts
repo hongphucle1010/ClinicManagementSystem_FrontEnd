@@ -46,6 +46,7 @@ interface SoluongDrug {
   ten: string
   dang: string
   giaca: string
+  maso: string
 }
 
 interface Drug {
