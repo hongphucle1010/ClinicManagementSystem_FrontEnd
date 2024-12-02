@@ -94,17 +94,18 @@ const GeminiChatbot: React.FC = () => {
           generationConfig,
           history: [
             {
+              role: 'user',
+              parts: [{ text: initPrompt }]
+            },
+            {
               role: 'model',
               parts: [
                 {
-                  text: `Tôi là trợ lý tư vấn của phòng khám cho các bệnh nhi.
-                  Nhiệm vụ của tôi là dùng dữ liệu của phòng khám để trả lời và tư vấn cho người dùng`
+                  text: `Tôi là trợ lý tư vấn của phòng khám PingpongDormitory cho các bệnh nhi.
+                  Nhiệm vụ của tôi là dùng dữ liệu của phòng khám để trả lời và tư vấn cho người dùng.
+                  Hãy cho tôi biết thông tin sức khỏe bệnh nhi.`
                 }
               ]
-            },
-            {
-              role: 'user',
-              parts: [{ text: initPrompt }]
             }
           ]
         })
