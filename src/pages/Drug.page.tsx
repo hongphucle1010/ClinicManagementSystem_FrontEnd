@@ -216,7 +216,7 @@ const DrugPage = () => {
                 <Table.Cell>
                   <div className='flex gap-2'>
                     <Button size='xs' color='info' onClick={() => handleEdit(drug)}>
-                      Chỉnh sửa
+                      Sửa
                     </Button>
                     <Button size='xs' color='failure' onClick={() => handleDeleteConfirmation(drug.maso)}>
                       Xóa
