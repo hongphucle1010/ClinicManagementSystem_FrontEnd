@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { TextInput, Table, Button } from 'flowbite-react'
 
@@ -17,7 +17,6 @@ const ChildrenCostsPage: React.FC = () => {
   const [ChildrenData, setChildrenData] = useState<ChildrenData[]>([])
 
   const handleClick = () => {
-    console.log('click')
     axios
       .get('http://localhost:4000/api/statistic/getchildrencost/' + searchQuery)
       .then((response) => {
@@ -57,8 +56,8 @@ const ChildrenCostsPage: React.FC = () => {
         </Table.Head>
         <Table.Body>
           {ChildrenData.length > 0 ? (
-            ChildrenData.map((Children) => (
-              <Table.Row key={Children.benh_nhi}>
+            ChildrenData.map((Children, key) => (
+              <Table.Row key={key}>
                 <Table.Cell>{Children.maso_bn}</Table.Cell>
                 <Table.Cell>{Children.child_name}</Table.Cell>
                 <Table.Cell>{Children.total_drug_fee}</Table.Cell>
