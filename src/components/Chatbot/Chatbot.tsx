@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button, TextInput, Spinner } from 'flowbite-react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import ReactMarkdown from 'react-markdown'
+import { TbMessageChatbot } from 'react-icons/tb'
+import image from '../../assets/image.png'
 
 import axios from 'axios'
 
@@ -161,8 +163,9 @@ const GeminiChatbot: React.FC = () => {
       {/* Chatbot Window */}
       {isChatOpen && (
         <div className='w-full sm:w-96 h-[500px] bg-white border rounded-lg shadow-lg flex flex-col'>
-          <div className='bg-blue-500 text-white p-3 flex justify-between items-center rounded-t-lg'>
-            <h3 className='font-semibold'>Gemini Chatbot Y Tế</h3>
+          <div className='bg-green-500 text-white p-3 flex justify-between items-center rounded-t-lg'>
+            <img src={image} alt='doctor' className='w-10 h-10 object-contain rounded-full' />
+            <h3 className='font-semibold'>Chatbot Phòng khám</h3>
             <Button size='xs' color='light' onClick={toggleChat}>
               ✕
             </Button>
@@ -174,7 +177,7 @@ const GeminiChatbot: React.FC = () => {
               <div
                 key={index}
                 className={`p-2 rounded-lg max-w-[80%] ${
-                  msg.role === 'user' ? 'bg-blue-100 self-end ml-auto' : 'bg-gray-100 self-start mr-auto'
+                  msg.role === 'user' ? 'bg-green-100 self-end ml-auto' : 'bg-gray-100 self-start mr-auto'
                 }`}
               >
                 {/* Render nội dung Markdown */}
@@ -202,7 +205,7 @@ const GeminiChatbot: React.FC = () => {
             />
             <Button
               size='sm'
-              color='info'
+              color='success'
               onClick={handleSendMessage}
               disabled={isLoading || !inputMessage.trim() || !chatSession}
             >
@@ -214,8 +217,13 @@ const GeminiChatbot: React.FC = () => {
 
       {/* Chatbot Launcher Button */}
       {!isChatOpen && (
-        <Button className='fixed bottom-4 right-4' color='info' onClick={toggleChat}>
-          {isChatOpen ? 'Đóng Chat' : 'Chat với Gemini'}
+        <Button
+          className='flex justify-between items-center fixed bottom-4 right-4 rounded-full'
+          color='success'
+          onClick={toggleChat}
+        >
+          <TbMessageChatbot className='m-auto me-2 text-2xl' />
+          <p className='m-auto text-xl'>Hỗ trợ</p>
         </Button>
       )}
     </div>
