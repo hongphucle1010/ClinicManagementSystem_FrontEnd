@@ -10,10 +10,10 @@ const formatDate = (date: Date): string => {
 }
 
 const BacSiManagement: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [searchTerm, setSearchTerm] = useState<string>('123456789012')
 
-  const [searchFromDay, setSearchFromDay] = useState<Date>(new Date())
-  const [searchToDay, setSearchToDay] = useState<Date>(new Date())
+  const [searchFromDay, setSearchFromDay] = useState<Date>(new Date('2023-01-01'))
+  const [searchToDay, setSearchToDay] = useState<Date>(new Date('2025-01-31'))
   // const [billInfo, setBillInfo] = useState(0)
 
   const [bkbInfo, setBkbInfo] = useState([] as BKB[])
