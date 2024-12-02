@@ -176,7 +176,7 @@ const MedicalRecord = () => {
   }
 
   const deleteDrug = (maso: string) => {
-    setDrugs(drugs.filter((drug) => drug.maso !== maso))
+    setDrugs(drugs.filter((drug) => drug.maso_th !== maso))
   }
 
   const deleteService = (madichvu: string) => {
@@ -223,13 +223,13 @@ const MedicalRecord = () => {
         </Table.Head>
         <Table.Body>
           {drugs.map((drug) => (
-            <Table.Row key={drug.maso}>
+            <Table.Row key={drug.maso_th}>
               <Table.Cell>{drug.ten}</Table.Cell>
               <Table.Cell>{drug.cachsd}</Table.Cell>
               <Table.Cell>{drug.dang}</Table.Cell>
               <Table.Cell>{drug.soluong}</Table.Cell>
               <Table.Cell>
-                <Button color='failure' onClick={() => deleteDrug(drug.maso)}>
+                <Button color='failure' onClick={() => deleteDrug(drug.maso_th)}>
                   Xóa
                 </Button>
               </Table.Cell>

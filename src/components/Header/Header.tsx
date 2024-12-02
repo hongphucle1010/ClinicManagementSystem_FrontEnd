@@ -39,7 +39,6 @@ const Header: React.FC = () => {
           </NavLink>
           <NavLink to='/services' className={({ isActive }) => (isActive ? `${styles['active-link']}` : '')}>
             Dịch vụ khám
-            Thống kê
           </NavLink>
         </div>
       </nav>

@@ -11,7 +11,7 @@ const DrugSelector = ({ newDrug, setNewDrug }: DrugSelectorProps) => {
   const [drugData, setDrugData] = useState<Partial<SoluongDrug>[]>([])
 
   const handleDrugSelect = (selectedDrug: Partial<SoluongDrug>) => {
-    setNewDrug({ ...newDrug, maso_th: selectedDrug.maso })
+    setNewDrug({ ...newDrug, maso_th: selectedDrug.maso_th })
   }
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const DrugSelector = ({ newDrug, setNewDrug }: DrugSelectorProps) => {
     <div className='flex flex-col space-y-4'>
       <Dropdown label='Chọn mã thuốc'>
         {drugData.map((drug) => (
-          <Dropdown.Item key={drug.maso} onClick={() => handleDrugSelect(drug)}>
+          <Dropdown.Item key={drug.maso_th} onClick={() => handleDrugSelect(drug)}>
             {drug.ten}
           </Dropdown.Item>
         ))}
