@@ -14,8 +14,6 @@ export const getMedicalExaminationApi = async (params: URLSearchParams) => {
   return res.data
 }
 
-
-
 export const addChildrenApi = async (data: Partial<Child>) => {
   const res = await apiClient.post<ApiResponse<AddChildrenResponse>>('/benhnhi/add', data)
   return res.data

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Table, Button, Modal, TextInput, Select, Alert } from 'flowbite-react'
 import { getAllServicesApi, addServiceApi, updateServiceApi } from '../api/dichvukham'
 
+import { AiFillMedicineBox } from 'react-icons/ai'
+
 interface Service {
   madichvu: string
   ten: string
@@ -126,7 +128,11 @@ const ServiceExamination = () => {
           </Alert>
         </div>
       )}
-      <h1 className='text-3xl text-center font-bold my-8'>Service Management</h1>
+      <div className='flex justify-center my-8 text-sky-900'>
+        <AiFillMedicineBox className='my-auto me-6' />
+        <h1 className='text-3xl text-center font-bold '> Service Management</h1>
+        <AiFillMedicineBox className='my-auto ms-6' />
+      </div>
       <div className='m-8 flex justify-between'>
         <Button onClick={() => setIsAddModalOpen(true)}>Add New Service</Button>
         <TextInput

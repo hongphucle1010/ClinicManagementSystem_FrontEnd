@@ -44,8 +44,6 @@ const MedicalExaminationManagement: React.FC = () => {
       .catch((err) => {
         console.error(err.message)
       })
-
-    
   }, [])
 
   return (
@@ -117,7 +115,7 @@ interface ExaminationFormProps {
 }
 
 const ExaminationForm: React.FC<ExaminationFormProps> = ({ onSubmit }) => {
-  const [form, setForm] = useState<Omit<MedicalExamination, 'maso'>>({
+  const [form, setForm] = useState<Omit<Partial<MedicalExamination>, 'maso'>>({
     ngaykham: '',
     taikham: false,
     trangthai: 'Pending',
@@ -139,8 +137,7 @@ const ExaminationForm: React.FC<ExaminationFormProps> = ({ onSubmit }) => {
   }
 
   const handleSubmit = () => {
-    const maso = crypto.randomUUID() // Generate a unique ID for the examination
-    onSubmit({ ...form, maso })
+    
   }
 
   return (

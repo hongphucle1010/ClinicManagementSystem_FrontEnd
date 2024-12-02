@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, TextInput } from 'flowbite-react'
 
 type Parent = {
@@ -15,9 +15,10 @@ type Parent = {
 // Parent Form Component
 interface ParentFormProps {
   onSubmit: (ParentData: Parent) => void
+  parent?: Parent
 }
 
-const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
+const ParentForm: React.FC<ParentFormProps> = ({ onSubmit, parent }) => {
   const [form, setForm] = useState<Parent>({
     cccd: '',
     hoten: '',
@@ -28,6 +29,12 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
     huyen: '',
     tinh: ''
   })
+
+  useEffect(() => {
+    if (parent) {
+      setForm(parent)
+    }
+  }, [parent])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -115,7 +122,7 @@ const ParentForm: React.FC<ParentFormProps> = ({ onSubmit }) => {
         />
       </div>
       <div className='mt-4'>
-        <Button onClick={handleSubmit}>Thêm thông tin phụ huynh</Button>
+        <Button onClick={handleSubmit}>{parent ? 'Cập nhật thông tin phụ huynh' : 'Thêm thông tin phụ huynh'}</Button>
       </div>
     </div>
   )
