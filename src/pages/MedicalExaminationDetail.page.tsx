@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Table, Button, TextInput, Modal } from 'flowbite-react'
 import axios from 'axios'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const MedicalRecord = () => {
   const [drugs, setDrugs] = useState<SoluongDrug[]>([])
@@ -24,7 +26,34 @@ const MedicalRecord = () => {
       CACHSD: newDrug.cachsd
     }
     console.log(data)
-    axios.post(`http://localhost:4000/api/soluongthuoc/add`, data)
+    axios
+      .post(`http://localhost:4000/api/soluongthuoc/add`, data)
+      .then(() => {
+        toast.success('Thêm thuốc thành công!', {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
+      .catch((err) => {
+        toast.error(err.message, {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
     axios
       .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
       .then((res) => {
@@ -42,9 +71,34 @@ const MedicalRecord = () => {
     setServiceModalOpen(false)
     const data = { ...newService, maso_bkb: msbkb }
     console.log(data)
-    axios.post(`http://localhost:4000/api/lanthuchiendichvu/add`, data).catch((err) => {
-      console.error(err.message)
-    })
+    axios
+      .post(`http://localhost:4000/api/lanthuchiendichvu/add`, data)
+      .then(() => {
+        toast.success('Thêm dịch vụ thành công!', {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
+      .catch((err) => {
+        toast.error(err.message, {
+          position: 'top-left',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce
+        })
+      })
     axios
       .get(`http://localhost:4000/api/buoikhambenh/${msbkb}`)
       .then((res) => {
@@ -91,6 +145,7 @@ const MedicalRecord = () => {
 
   return (
     <div className='p-4'>
+      <ToastContainer />
       <h1 className='text-xl font-bold'>Hồ Sơ Y Tế</h1>
       {/* {
       maso_bkb: "1446b778-b4a0-47a8-a7fa-a5caa1f37bf3",
