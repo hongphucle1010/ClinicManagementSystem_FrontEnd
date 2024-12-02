@@ -167,7 +167,7 @@ const ServiceExamination = () => {
             {filteredServices.map((service, index) => (
               <Table.Row key={index} className='bg-white hover:bg-sky-100'>
                 <Table.Cell>{service.ten}</Table.Cell>
-                <Table.Cell>{service.giaca}</Table.Cell>
+                <Table.Cell>{String(service.giaca).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</Table.Cell>
                 <Table.Cell className='w-3/5'>{service.mota}</Table.Cell>
                 <Table.Cell>
                   <Button size='xs' color='info' onClick={() => handleEdit(service)}>
