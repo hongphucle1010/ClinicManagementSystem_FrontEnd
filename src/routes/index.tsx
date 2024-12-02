@@ -11,6 +11,8 @@ import LogIn from '../pages/RegisterExamination/LogIn'
 import RegisterExamination from '../pages/RegisterExamination/RegisterExamination'
 import Services from '../pages/ServiceExamination.page.tsx'
 import Drugs from '../pages/Drug.page.tsx'
+import Statictis from '../pages/Statictis.page.tsx'
+import path from 'path'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -40,6 +42,14 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <ChildrenPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/statistics',
+      element: (
+        <MainLayout>
+          <Statictis />
         </MainLayout>
       )
     },

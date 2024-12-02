@@ -14,3 +14,8 @@ export const deleteParentApi = async (cccd: string) => {
   const res = await apiClient.delete(`/phuhuynh/delete/`, { data: { cccd } })
   return res.data
 }
+
+export const updateParentApi = async (data: Partial<Parent>) => {
+  const res = await apiClient.put<ApiResponse<Parent>>('/phuhuynh/update', data)
+  return res.data
+}
