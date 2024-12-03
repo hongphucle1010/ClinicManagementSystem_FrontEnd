@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Button, TextInput, Spinner } from 'flowbite-react'
+import { Button, Spinner } from 'flowbite-react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import ReactMarkdown from 'react-markdown'
 import { TbMessageChatbot } from 'react-icons/tb'
@@ -74,8 +74,11 @@ const GeminiChatbot: React.FC = () => {
         \nDanh sách dịch vụ:\n${services}
         \nDanh sách bác sĩ:\n${doctors}
         Hãy trả lời các câu hỏi về để tư vấn dịch vụ và thuốc men bằng tiếng Việt.
-        Lưu ý: Khi hỏi về mua bán thuốc, phải hỏi lại tuổi bệnh nhi và giới tính nếu user không cung cấp,
-        và không đưa ra câu trả lời trong lúc này cho đến khi biết tuổi và giới tính.
+        Lưu ý: \n
+        - Khi hỏi về mua bán thuốc, phải hỏi lại tuổi bệnh nhi và giới tính nếu user không cung cấp,
+        và không đưa ra câu trả lời trong lúc này cho đến khi biết tuổi và giới tính. \n
+        - Các câu hỏi ngoài lĩnh vực y tế hoặc phòng khám, vui lòng trả lời:
+        "Nội dung ngoài lĩnh vực trả lời của phòng khám, vui lòng đặt lại câu hỏi.".
         `
 
         const generativeAI = new GoogleGenerativeAI(apiKey)
@@ -164,8 +167,9 @@ const GeminiChatbot: React.FC = () => {
   }
 
   // Handle input key press (Enter to send)
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault() // Prevent adding a new line when Enter is pressed without Shift
       handleSendMessage()
     }
   }
@@ -211,18 +215,20 @@ const GeminiChatbot: React.FC = () => {
 
           {/* Chat Input */}
           <div className='p-3 border-t flex'>
-            <TextInput
-              type='text'
-              placeholder='Nhập câu hỏi về y tế...'
-              className='flex-1 mr-2'
+            <textarea
+              placeholder='Đặt câu hỏi về dịch vụ hoặc cung cấp sức khỏe bệnh nhi...'
+              className='flex-1 mr-2 p-2 border rounded resize-none overflow-y-auto'
               value={inputMessage}
+              rows={2} // Default height
               onKeyPress={handleKeyPress}
               onChange={(e) => setInputMessage(e.target.value)}
               disabled={isLoading || !chatSession}
+              style={{ maxHeight: '150px' }} // Prevent excessive height growth
             />
             <Button
               size='sm'
               color='success'
+              className='h-3/5 m-auto'
               onClick={handleSendMessage}
               disabled={isLoading || !inputMessage.trim() || !chatSession}
             >
