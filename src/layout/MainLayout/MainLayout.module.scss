@@ -1,0 +1,43 @@
+.bubble {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(135, 206, 250, 0.7); /* Light blue */
+  border-radius: 50%;
+  pointer-events: none;
+  animation: bubble-fade 1s ease-out forwards;
+}
+
+@keyframes bubble-fade {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+
+.greenBubble {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 255, 0, 0.7); /* Green */
+    border-radius: 50%;
+    pointer-events: none;
+    animation: green-bubble-fade 1s ease-out forwards;
+  }
+  
+  @keyframes green-bubble-fade {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+  
