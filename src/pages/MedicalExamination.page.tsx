@@ -20,6 +20,7 @@ const MedicalExaminationManagement: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
 
   const addExamination = (examination: MedicalExamination) => {
+    console.log('Adding: ', examination)
     addMedicalExaminationApi(examination)
       .then((res) => {
         setExaminations([...examinations, res.data]) // Access the data property
@@ -183,7 +184,10 @@ const ExaminationForm: React.FC<ExaminationFormProps> = ({ onSubmit }) => {
     })
   }
 
-  const handleSubmit = () => {}
+  const handleSubmit = () => {
+    const maso = crypto.randomUUID() // Generate a unique ID for the examination
+    onSubmit({ ...form, maso })
+  }
 
   return (
     <div>
