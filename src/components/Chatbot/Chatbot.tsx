@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from 'react'
 import { Button, Spinner } from 'flowbite-react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
@@ -41,7 +42,7 @@ const GeminiChatbot: React.FC = () => {
         .join('\n')
 
       return { drugs, services, doctors }
-    } catch (error) {
+    } catch {
       return {
         drugs: 'Không thể tải dữ liệu thuốc.',
         services: 'Không thể tải dữ liệu dịch vụ.',
