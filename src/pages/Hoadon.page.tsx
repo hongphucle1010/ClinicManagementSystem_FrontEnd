@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from 'react'
 import axios from 'axios'
 import { TextInput, Table, Button, Alert, Card } from 'flowbite-react'
 

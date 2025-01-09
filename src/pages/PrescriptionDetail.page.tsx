@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { TextInput, Table, Button, Alert, Card } from 'flowbite-react'
-import useLocation from 'react-router-dom'
+import { Table, Alert, Card } from 'flowbite-react'
 
 interface HoaDon {
   mahoadon: string
@@ -37,7 +36,6 @@ interface LanThucHienDichVu {
 }
 
 const HoaDonPage = () => {
-  const [search, setSearch] = useState('')
   const [hoaDon, setHoaDon] = useState<HoaDon | null>(null)
   const [donThuoc, setDonThuoc] = useState<DonThuoc[]>([])
   const [lanThucHienDichVu, setLanThucHienDichVu] = useState<LanThucHienDichVu[]>([])
@@ -51,7 +49,7 @@ const HoaDonPage = () => {
       setDonThuoc(res.data.donthuoc)
       setLanThucHienDichVu(res.data.lanthuchiendichvu)
     })
-  },[])
+  }, [mahoadon])
 
   return (
     <div className='p-4 space-y-6'>

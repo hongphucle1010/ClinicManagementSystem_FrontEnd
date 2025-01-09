@@ -1,60 +1,61 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
-import { Table, Button, Modal, Card, TextInput, Alert, Dropdown } from 'flowbite-react'
+import { Table, Button, Modal, TextInput, Alert, Dropdown } from 'flowbite-react'
 import axios from 'axios'
-import { Bounce, toast, ToastContainer } from 'react-toastify'
+import { Bounce, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useNavigate } from 'react-router-dom'
 import DrugSelector from '../components/DrugForm'
 import ServiceSelector from '../components/ServiceForm'
 
-const GeneralInfo = (medicalInfo: any) => {
-  return (
-    <Card className='space-y-4 p-4 border rounded-lg shadow-md'>
-      <ul className='space-y-2'>
-        <li className='text-sm'>
-          <strong>Mã số:</strong> {medicalInfo.maso}
-        </li>
-        <li className='text-sm'>
-          <strong>Ngày khám:</strong> {new Date(medicalInfo.ngaykham).toLocaleString()}
-        </li>
-        <li className='text-sm'>
-          <strong>Ngày tái khám:</strong> {medicalInfo.taikham ? 'Có' : 'Không'}
-        </li>
-        <li className='text-sm'>
-          <strong>Trạng thái:</strong> {medicalInfo.trangthai}
-        </li>
-        <li className='text-sm'>
-          <strong>Huyết áp:</strong> {medicalInfo.huyetap}
-        </li>
-        <li className='text-sm'>
-          <strong>Nhiệt độ:</strong> {medicalInfo.nhietdo}°C
-        </li>
-        <li className='text-sm'>
-          <strong>Chẩn đoán:</strong> {medicalInfo.chandoan}
-        </li>
-        <li className='text-sm'>
-          <strong>Kết luận:</strong> {medicalInfo.ketluan}
-        </li>
-        <li className='text-sm'>
-          <strong>Mã số bệnh nhân:</strong> {medicalInfo.maso_bn}
-        </li>
-        <li className='text-sm'>
-          <strong>CCCD Bác sĩ:</strong> {medicalInfo.cccd_bs}
-        </li>
+// const GeneralInfo = (medicalInfo: any) => {
+//   return (
+//     <Card className='space-y-4 p-4 border rounded-lg shadow-md'>
+//       <ul className='space-y-2'>
+//         <li className='text-sm'>
+//           <strong>Mã số:</strong> {medicalInfo.maso}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Ngày khám:</strong> {new Date(medicalInfo.ngaykham).toLocaleString()}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Ngày tái khám:</strong> {medicalInfo.taikham ? 'Có' : 'Không'}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Trạng thái:</strong> {medicalInfo.trangthai}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Huyết áp:</strong> {medicalInfo.huyetap}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Nhiệt độ:</strong> {medicalInfo.nhietdo}°C
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Chẩn đoán:</strong> {medicalInfo.chandoan}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Kết luận:</strong> {medicalInfo.ketluan}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Mã số bệnh nhân:</strong> {medicalInfo.maso_bn}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>CCCD Bác sĩ:</strong> {medicalInfo.cccd_bs}
+//         </li>
 
-        <li className='text-sm'>
-          <strong>Chuyên khoa:</strong> {medicalInfo.chuyenkhoa}
-        </li>
-        <li className='text-sm'>
-          <strong>Bằng cấp:</strong> {medicalInfo.bangcap}
-        </li>
-        <li className='text-sm'>
-          <strong>Chứng chỉ hành nghề:</strong> {medicalInfo.cc_hanhnghe}
-        </li>
-      </ul>
-    </Card>
-  )
-}
+//         <li className='text-sm'>
+//           <strong>Chuyên khoa:</strong> {medicalInfo.chuyenkhoa}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Bằng cấp:</strong> {medicalInfo.bangcap}
+//         </li>
+//         <li className='text-sm'>
+//           <strong>Chứng chỉ hành nghề:</strong> {medicalInfo.cc_hanhnghe}
+//         </li>
+//       </ul>
+//     </Card>
+//   )
+// }
 
 const MedicalRecord = () => {
   const [drugs, setDrugs] = useState<SoluongDrug[]>([])
@@ -67,9 +68,7 @@ const MedicalRecord = () => {
     cccd_tn: '',
     trangthai: 'PENDING'
   })
-  const [hoadon, setHoadon] = useState<any>(null)
-  const navigate = useNavigate()
-
+  // const [hoadon, setHoadon] = useState<any>(null)
   const [isDrugModalOpen, setDrugModalOpen] = useState(false)
   const [isServiceModalOpen, setServiceModalOpen] = useState(false)
   const [isPrescriptionModalOpen, setPrescriptionModalOpen] = useState(false)
@@ -77,21 +76,21 @@ const MedicalRecord = () => {
   const [newDrug, setNewDrug] = useState<Partial<SoluongDrug>>({})
   const [newService, setNewService] = useState<Partial<Service>>({})
 
-  const [medicalInfo, setMedicalInfo] = useState<MedicalExamination>({
-    maso: '',
-    ngaykham: '',
-    taikham: false,
-    trangthai: '',
-    huyetap: '',
-    nhietdo: 0,
-    chandoan: '',
-    ketluan: '',
-    maso_bn: '',
-    cccd_bs: '',
-    chuyenkhoa: '',
-    bangcap: '',
-    cc_hanhnghe: ''
-  })
+  // const [medicalInfo, setMedicalInfo] = useState<MedicalExamination>({
+  //   maso: '',
+  //   ngaykham: '',
+  //   taikham: false,
+  //   trangthai: '',
+  //   huyetap: '',
+  //   nhietdo: 0,
+  //   chandoan: '',
+  //   ketluan: '',
+  //   maso_bn: '',
+  //   cccd_bs: '',
+  //   chuyenkhoa: '',
+  //   bangcap: '',
+  //   cc_hanhnghe: ''
+  // })
 
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -245,13 +244,13 @@ const MedicalRecord = () => {
         console.log(res.data)
         setDrugs(res.data.donthuoc)
         setServices(res.data.lanthuchiendichvu)
-        setMedicalInfo(res.data.buoikhambenh)
-        setHoadon(res.data.hoadon)
+        // setMedicalInfo(res.data.buoikhambenh)
+        // setHoadon(res.data.hoadon)
       })
       .catch((err) => {
         console.error(err.message)
       })
-  }, [])
+  }, [msbkb])
 
   return (
     <div className='p-4'>
